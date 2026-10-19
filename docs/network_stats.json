@@ -1,0 +1,362 @@
+{
+  "geocode_quality": {
+    "ok": 363,
+    "approximate": 251,
+    "out_of_area": 5,
+    "missing": 0
+  },
+  "networks": [
+    {
+      "name": "Maricá EPT bus network",
+      "stops": 614,
+      "edges": 778,
+      "lines": 46,
+      "density": 0.0020670489024448564,
+      "reciprocity": 0.05398457583547558,
+      "weak_components": 1,
+      "largest_weak_component": 614,
+      "strong_components": 113,
+      "largest_strong_component": 494,
+      "total_edge_km": 2981.0122518014186,
+      "median_edge_km": 1.123562563826404,
+      "approximate_edge_share": 0.6002570694087404,
+      "suspect_edge_share": 0.2326478149100257,
+      "median_clean_edge_km": 0.4667777503173927,
+      "scc_avg_shortest_path_km": 102.03766533492512,
+      "scc_avg_shortest_path_hops": 31.20969278399619,
+      "scc_diameter_hops": 109,
+      "top_betweenness": [
+        {
+          "stop": "Rodovia Amaral Peixoto, 37",
+          "value": 0.3152824721212266,
+          "lines": 5
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 352",
+          "value": 0.30982933321960315,
+          "lines": 11
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 2704",
+          "value": 0.29612547846762455,
+          "lines": 7
+        },
+        {
+          "stop": "Rua Sessenta E Seis, 35",
+          "value": 0.24262825183242243,
+          "lines": 2
+        },
+        {
+          "stop": "Rua A Dois Lot Vale Figueiras, 4",
+          "value": 0.2425802717921192,
+          "lines": 2
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto | Entrada De Ponta Negra",
+          "value": 0.24253229175181595,
+          "lines": 2
+        },
+        {
+          "stop": "Rua Padre Arlíndo Viêira, 10",
+          "value": 0.23188679435281215,
+          "lines": 11
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 586",
+          "value": 0.23185399318328018,
+          "lines": 5
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 3 (Passarela Escola Mun De Inoã)",
+          "value": 0.231806013142977,
+          "lines": 5
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 13",
+          "value": 0.23175803310267376,
+          "lines": 5
+        }
+      ],
+      "top_degree": [
+        {
+          "stop": "2ª Entrada De Maricá",
+          "value": 8.0,
+          "lines": 13
+        },
+        {
+          "stop": "Terminal De Itaipuaçu",
+          "value": 8.0,
+          "lines": 12
+        },
+        {
+          "stop": "Avenida Contorno Lto Balneario Bambui, 85",
+          "value": 7.0,
+          "lines": 4
+        },
+        {
+          "stop": "Avenida Roberto Silveira, 646",
+          "value": 7.0,
+          "lines": 12
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 352",
+          "value": 7.0,
+          "lines": 11
+        },
+        {
+          "stop": "Rua Clímaco Pereira, 269",
+          "value": 7.0,
+          "lines": 12
+        },
+        {
+          "stop": "Acesso Para Rj-114",
+          "value": 6.0,
+          "lines": 9
+        },
+        {
+          "stop": "Avenida Carlos Marighella, 13",
+          "value": 6.0,
+          "lines": 3
+        },
+        {
+          "stop": "Avenida Roberto Silveira, 455",
+          "value": 6.0,
+          "lines": 12
+        },
+        {
+          "stop": "Entrada De Maricá",
+          "value": 6.0,
+          "lines": 6
+        }
+      ],
+      "top_lines_served": [
+        {
+          "stop": "Rodoviária Do Povo De Maricá",
+          "value": 27.0,
+          "lines": 27
+        },
+        {
+          "stop": "2ª Entrada De Maricá",
+          "value": 13.0,
+          "lines": 13
+        },
+        {
+          "stop": "Avenida Roberto Silveira, 455",
+          "value": 12.0,
+          "lines": 12
+        },
+        {
+          "stop": "Avenida Roberto Silveira, 646",
+          "value": 12.0,
+          "lines": 12
+        },
+        {
+          "stop": "Rua Clímaco Pereira, 269",
+          "value": 12.0,
+          "lines": 12
+        },
+        {
+          "stop": "Terminal De Itaipuaçu",
+          "value": 12.0,
+          "lines": 12
+        },
+        {
+          "stop": "Inoã Multicenter | Ponto Final Ept",
+          "value": 11.0,
+          "lines": 11
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 352",
+          "value": 11.0,
+          "lines": 11
+        },
+        {
+          "stop": "Rua Padre Arlíndo Viêira, 10",
+          "value": 11.0,
+          "lines": 11
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 222-500 (Km 15 - Inoã)",
+          "value": 10.0,
+          "lines": 10
+        }
+      ]
+    },
+    {
+      "name": "Maricá EPT bus network, Itaipuaçu subgraph",
+      "stops": 289,
+      "edges": 324,
+      "lines": 35,
+      "density": 0.0038927335640138406,
+      "reciprocity": 0.05555555555555555,
+      "weak_components": 23,
+      "largest_weak_component": 252,
+      "strong_components": 145,
+      "largest_strong_component": 120,
+      "total_edge_km": 484.6305286113941,
+      "median_edge_km": 0.5325678403965819,
+      "approximate_edge_share": 0.5833333333333334,
+      "suspect_edge_share": 0.08024691358024691,
+      "median_clean_edge_km": 0.49073500074044446,
+      "scc_avg_shortest_path_km": 19.77037027086485,
+      "scc_avg_shortest_path_hops": 13.503991596638656,
+      "scc_diameter_hops": 36,
+      "top_betweenness": [
+        {
+          "stop": "Terminal De Itaipuaçu",
+          "value": 0.15847206091108532,
+          "lines": 12
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 352",
+          "value": 0.14699880629758677,
+          "lines": 11
+        },
+        {
+          "stop": "Rua Carlos Mariguella, 3",
+          "value": 0.12781084656084657,
+          "lines": 6
+        },
+        {
+          "stop": "Rua Carlos Mariguella, 456",
+          "value": 0.1199953219770293,
+          "lines": 5
+        },
+        {
+          "stop": "Inoã Multicenter | Ponto Final Ept",
+          "value": 0.10998999870951091,
+          "lines": 11
+        },
+        {
+          "stop": "Rua Carlos Mariguella, 28",
+          "value": 0.10936088527551943,
+          "lines": 2
+        },
+        {
+          "stop": "Rua Professor Cardoso De Menezes, 1194",
+          "value": 0.10739692218350755,
+          "lines": 7
+        },
+        {
+          "stop": "Rua Sessenta E Seis Lot Jd Atlantico, 24",
+          "value": 0.10540069686411149,
+          "lines": 3
+        },
+        {
+          "stop": "Avenida Jardel Filho, 272",
+          "value": 0.10468689508323654,
+          "lines": 3
+        },
+        {
+          "stop": "Avenida Jardel Filho, 2602",
+          "value": 0.1039730933023616,
+          "lines": 3
+        }
+      ],
+      "top_degree": [
+        {
+          "stop": "Rodovia Amaral Peixoto, 352",
+          "value": 7.0,
+          "lines": 11
+        },
+        {
+          "stop": "Terminal De Itaipuaçu",
+          "value": 7.0,
+          "lines": 12
+        },
+        {
+          "stop": "Avenida Carlos Marighella, 13",
+          "value": 6.0,
+          "lines": 3
+        },
+        {
+          "stop": "Rua Carlos Mariguella, 1190",
+          "value": 6.0,
+          "lines": 8
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 2704",
+          "value": 5.0,
+          "lines": 7
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 2704 (Bairro Cajueiro)",
+          "value": 5.0,
+          "lines": 7
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 40",
+          "value": 5.0,
+          "lines": 10
+        },
+        {
+          "stop": "Rua Carlos Mariguella, 3",
+          "value": 5.0,
+          "lines": 6
+        },
+        {
+          "stop": "Rua Carlos Mariguella, 300a",
+          "value": 5.0,
+          "lines": 5
+        },
+        {
+          "stop": "Rua Professor Cardoso De Menezes, 1194",
+          "value": 5.0,
+          "lines": 7
+        }
+      ],
+      "top_lines_served": [
+        {
+          "stop": "Terminal De Itaipuaçu",
+          "value": 12.0,
+          "lines": 12
+        },
+        {
+          "stop": "Inoã Multicenter | Ponto Final Ept",
+          "value": 11.0,
+          "lines": 11
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 352",
+          "value": 11.0,
+          "lines": 11
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 222-500 (Km 15 - Inoã)",
+          "value": 10.0,
+          "lines": 10
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 40",
+          "value": 10.0,
+          "lines": 10
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 95 (Posto Inoã)",
+          "value": 9.0,
+          "lines": 9
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto, 15",
+          "value": 8.0,
+          "lines": 8
+        },
+        {
+          "stop": "Rua Carlos Mariguella, 1190",
+          "value": 8.0,
+          "lines": 8
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto",
+          "value": 7.0,
+          "lines": 7
+        },
+        {
+          "stop": "Rodovia Amaral Peixoto (Condomínio Green Park II)",
+          "value": 7.0,
+          "lines": 7
+        }
+      ]
+    }
+  ]
+}
