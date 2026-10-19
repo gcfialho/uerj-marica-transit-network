@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stop spacing: Carlos Marighella</title>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_efb57eee5051b6f4280ee31f9edf951b {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    <div style="position:fixed;z-index:9999;background:rgba(255,255,255,.94);padding:10px 12px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.25);font:12px/1.45 system-ui,sans-serif;color:#0b0b0b;bottom:28px;right:12px;max-width:300px;"><div style="font-weight:600;margin-bottom:4px">Stop spacing along Carlos Marighella</div><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#008300;margin-right:6px"></span>near (&lt;=400 m)</div><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#eda100;margin-right:6px"></span>reasonable (400-600 m)</div><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#eb6834;margin-right:6px"></span>medium (600-800 m)</div><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e34948;margin-right:6px"></span>far (800-1200 m)</div><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6250d6;margin-right:6px"></span>very far (&gt;1200 m)</div><div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#0b0b0b;margin-right:6px"></span>Suggested stop (gap &gt; 450 m)</div><div style="margin-top:6px;color:#52514e">23 stop locations · 9.0 km of road · 7 gaps above 450 m.</div></div>
+    
+            <div class="folium-map" id="map_efb57eee5051b6f4280ee31f9edf951b" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_efb57eee5051b6f4280ee31f9edf951b = L.map(
+                "map_efb57eee5051b6f4280ee31f9edf951b",
+                {
+                    center: [-22.93281065652174, -42.95750608695652],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 14,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+
+            
+
+        
+    
+            var tile_layer_02051297f91d7f0c1a1d3b3510a9bed1 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_02051297f91d7f0c1a1d3b3510a9bed1.addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            map_efb57eee5051b6f4280ee31f9edf951b.fitBounds(
+                [[-22.9613655, -42.9861636], [-22.9108602, -42.9338312]],
+                {}
+            );
+        
+    
+            var poly_line_ef4a012eabf00d191b7d72c3f9eb1260 = L.polyline(
+                [[-22.9613655, -42.9861636], [-22.960099, -42.9846171]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_ef4a012eabf00d191b7d72c3f9eb1260.bindTooltip(
+                `<div>
+                     212 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_94f0722334f643bd8048cb885bf9825c = L.polyline(
+                [[-22.960099, -42.9846171], [-22.9589425, -42.9826691]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_94f0722334f643bd8048cb885bf9825c.bindTooltip(
+                `<div>
+                     237 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_09a72862616178362e668c98a0c45a29 = L.polyline(
+                [[-22.9589425, -42.9826691], [-22.9535809, -42.9755593]],
+                {"bubblingMouseEvents": true, "color": "#e34948", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#e34948", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_09a72862616178362e668c98a0c45a29.bindTooltip(
+                `<div>
+                     941 m: far (800-1200 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_eb494d2626069a3dbe88e11495a1ded6 = L.polyline(
+                [[-22.9535809, -42.9755593], [-22.9522534, -42.9734862]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_eb494d2626069a3dbe88e11495a1ded6.bindTooltip(
+                `<div>
+                     259 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_9ba6ba1da61ea33bc972c9e22af46f38 = L.polyline(
+                [[-22.9522534, -42.9734862], [-22.9505964, -42.9715937]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_9ba6ba1da61ea33bc972c9e22af46f38.bindTooltip(
+                `<div>
+                     267 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_e02bededa58348d2d8e9b9b142217555 = L.polyline(
+                [[-22.9505964, -42.9715937], [-22.9455739, -42.963386]],
+                {"bubblingMouseEvents": true, "color": "#e34948", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#e34948", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_e02bededa58348d2d8e9b9b142217555.bindTooltip(
+                `<div>
+                     1009 m: far (800-1200 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_7e44638d654cf1899637b7815a4e34ce = L.polyline(
+                [[-22.9455739, -42.963386], [-22.94484, -42.9626363]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_7e44638d654cf1899637b7815a4e34ce.bindTooltip(
+                `<div>
+                     112 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_ccefa330b397ac508f13cb81bd39408a = L.polyline(
+                [[-22.94484, -42.9626363], [-22.9408327, -42.9586681]],
+                {"bubblingMouseEvents": true, "color": "#eb6834", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#eb6834", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_ccefa330b397ac508f13cb81bd39408a.bindTooltip(
+                `<div>
+                     603 m: medium (600-800 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8f6ce4bb99ef58867131e51651aab552 = L.polyline(
+                [[-22.9408327, -42.9586681], [-22.9344381, -42.9547539]],
+                {"bubblingMouseEvents": true, "color": "#e34948", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#e34948", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_8f6ce4bb99ef58867131e51651aab552.bindTooltip(
+                `<div>
+                     816 m: far (800-1200 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_1d2cc292b9a1dc23f6690aa170ed9e2b = L.polyline(
+                [[-22.9344381, -42.9547539], [-22.9332678, -42.9543191]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_1d2cc292b9a1dc23f6690aa170ed9e2b.bindTooltip(
+                `<div>
+                     138 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a8818fc94b642b06094d8113146234e4 = L.polyline(
+                [[-22.9332678, -42.9543191], [-22.9321321, -42.9540648]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_a8818fc94b642b06094d8113146234e4.bindTooltip(
+                `<div>
+                     129 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8c840bef1eeb80182fb28ad31ae5f974 = L.polyline(
+                [[-22.9321321, -42.9540648], [-22.9309591, -42.9533997]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_8c840bef1eeb80182fb28ad31ae5f974.bindTooltip(
+                `<div>
+                     147 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_efe13f87195a18f52cc620c46b9faa46 = L.polyline(
+                [[-22.9309591, -42.9533997], [-22.9255201, -42.9504051]],
+                {"bubblingMouseEvents": true, "color": "#eb6834", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#eb6834", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_efe13f87195a18f52cc620c46b9faa46.bindTooltip(
+                `<div>
+                     678 m: medium (600-800 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_3b4e3b2ed30f0de955c40de184b877f6 = L.polyline(
+                [[-22.9255201, -42.9504051], [-22.9171788, -42.9507319]],
+                {"bubblingMouseEvents": true, "color": "#e34948", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#e34948", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_3b4e3b2ed30f0de955c40de184b877f6.bindTooltip(
+                `<div>
+                     928 m: far (800-1200 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_3de2375ee4895424d00980772ddedaa2 = L.polyline(
+                [[-22.9171788, -42.9507319], [-22.9150762, -42.9509802]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_3de2375ee4895424d00980772ddedaa2.bindTooltip(
+                `<div>
+                     235 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_931560d2668541d6a8198df2fdf42ce1 = L.polyline(
+                [[-22.9150762, -42.9509802], [-22.9135326, -42.949205]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_931560d2668541d6a8198df2fdf42ce1.bindTooltip(
+                `<div>
+                     250 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_d8d049279b5403ced6b9c71f4146dd1a = L.polyline(
+                [[-22.9135326, -42.949205], [-22.912868, -42.9486858]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_d8d049279b5403ced6b9c71f4146dd1a.bindTooltip(
+                `<div>
+                     91 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_bc94a19a0a1ceee0786bef8884701d12 = L.polyline(
+                [[-22.912868, -42.9486858], [-22.9115829, -42.946687]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_bc94a19a0a1ceee0786bef8884701d12.bindTooltip(
+                `<div>
+                     250 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_99db9bba5fa969955a447ebfbf06a7b2 = L.polyline(
+                [[-22.9115829, -42.946687], [-22.9108602, -42.9444824]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_99db9bba5fa969955a447ebfbf06a7b2.bindTooltip(
+                `<div>
+                     240 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_639adae1615c7a05e5700746d45d0d2d = L.polyline(
+                [[-22.9108602, -42.9444824], [-22.9142375, -42.9371077]],
+                {"bubblingMouseEvents": true, "color": "#e34948", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#e34948", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_639adae1615c7a05e5700746d45d0d2d.bindTooltip(
+                `<div>
+                     844 m: far (800-1200 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_3f3acd4ffda4d6fb881f98db9d938ef6 = L.polyline(
+                [[-22.9142375, -42.9371077], [-22.9164613, -42.9352068]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_3f3acd4ffda4d6fb881f98db9d938ef6.bindTooltip(
+                `<div>
+                     315 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_e18a8711519e1a574b6615f7b03d740b = L.polyline(
+                [[-22.9164613, -42.9352068], [-22.9184461, -42.9338312]],
+                {"bubblingMouseEvents": true, "color": "#008300", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#008300", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            poly_line_e18a8711519e1a574b6615f7b03d740b.bindTooltip(
+                `<div>
+                     262 m: near (<=400 m)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_18e7f50d7ce39e78bcd959823a2500fb = L.circleMarker(
+                [-22.9613655, -42.9861636],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_a3df273c9f8e829b6e8eda6a5cd68c50 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_3d55e7508a750c8c6e76406d6a1dcce9 = $(`<div id="html_3d55e7508a750c8c6e76406d6a1dcce9" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Avenida Vitória Régia, 17<br><b>Lines</b>: E21, E36</div>`)[0];
+                popup_a3df273c9f8e829b6e8eda6a5cd68c50.setContent(html_3d55e7508a750c8c6e76406d6a1dcce9);
+            
+        
+
+        circle_marker_18e7f50d7ce39e78bcd959823a2500fb.bindPopup(popup_a3df273c9f8e829b6e8eda6a5cd68c50)
+        ;
+
+        
+    
+    
+            circle_marker_18e7f50d7ce39e78bcd959823a2500fb.bindTooltip(
+                `<div>
+                     Avenida Vitória Régia, 17
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_76ac175bdf7684c851f9075cadca0902 = L.circleMarker(
+                [-22.960099, -42.9846171],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_667eea22b62e25d302aea6244f33cdc8 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_d32220dc2d415b6e0a62cfc98da80b70 = $(`<div id="html_d32220dc2d415b6e0a62cfc98da80b70" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Avenida Vitória Régia, 201<br><b>Lines</b>: E30, E30A, E32, E32A, E36</div>`)[0];
+                popup_667eea22b62e25d302aea6244f33cdc8.setContent(html_d32220dc2d415b6e0a62cfc98da80b70);
+            
+        
+
+        circle_marker_76ac175bdf7684c851f9075cadca0902.bindPopup(popup_667eea22b62e25d302aea6244f33cdc8)
+        ;
+
+        
+    
+    
+            circle_marker_76ac175bdf7684c851f9075cadca0902.bindTooltip(
+                `<div>
+                     Avenida Vitória Régia, 201
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_468d46449dd22e68eb8a761eac163918 = L.circleMarker(
+                [-22.9589425, -42.9826691],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_7cb2818d24af6f4a3579c2b5c605a2b6 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_c1bfe2a334ff6f83f6db9a44ff3aaa3f = $(`<div id="html_c1bfe2a334ff6f83f6db9a44ff3aaa3f" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Avenida Carlos Marighella, 13<br>Avenida Carlos Marighella, 26<br><b>Lines</b>: E16, E26, E27, E32, E35, E36</div>`)[0];
+                popup_7cb2818d24af6f4a3579c2b5c605a2b6.setContent(html_c1bfe2a334ff6f83f6db9a44ff3aaa3f);
+            
+        
+
+        circle_marker_468d46449dd22e68eb8a761eac163918.bindPopup(popup_7cb2818d24af6f4a3579c2b5c605a2b6)
+        ;
+
+        
+    
+    
+            circle_marker_468d46449dd22e68eb8a761eac163918.bindTooltip(
+                `<div>
+                     Avenida Carlos Marighella, 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_84d1dc0268852b372e33c825f153666c = L.circleMarker(
+                [-22.9535809, -42.9755593],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_fc80343084c199bd8e2c7f8d18b145d1 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_93b5983db5a6ac5879929837c0d355e6 = $(`<div id="html_93b5983db5a6ac5879929837c0d355e6" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 168<br><b>Lines</b>: E32</div>`)[0];
+                popup_fc80343084c199bd8e2c7f8d18b145d1.setContent(html_93b5983db5a6ac5879929837c0d355e6);
+            
+        
+
+        circle_marker_84d1dc0268852b372e33c825f153666c.bindPopup(popup_fc80343084c199bd8e2c7f8d18b145d1)
+        ;
+
+        
+    
+    
+            circle_marker_84d1dc0268852b372e33c825f153666c.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 168
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6cb35c3992671b0eac285f2eca597fc1 = L.circleMarker(
+                [-22.9522534, -42.9734862],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_3c5b3e12896f06a0919f4d777fbf896a = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_5ef15dcf26bf9279b9e6170621b9c042 = $(`<div id="html_5ef15dcf26bf9279b9e6170621b9c042" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 17<br><b>Lines</b>: E32, E36</div>`)[0];
+                popup_3c5b3e12896f06a0919f4d777fbf896a.setContent(html_5ef15dcf26bf9279b9e6170621b9c042);
+            
+        
+
+        circle_marker_6cb35c3992671b0eac285f2eca597fc1.bindPopup(popup_3c5b3e12896f06a0919f4d777fbf896a)
+        ;
+
+        
+    
+    
+            circle_marker_6cb35c3992671b0eac285f2eca597fc1.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 17
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_33e7af3f59925e570046ac13822b4c5a = L.circleMarker(
+                [-22.9505964, -42.9715937],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_102a06395083213bf5316c111fc2d4f2 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_4293c398843592cd8c73c53f98779e45 = $(`<div id="html_4293c398843592cd8c73c53f98779e45" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 169<br><b>Lines</b>: E21, E32, E33</div>`)[0];
+                popup_102a06395083213bf5316c111fc2d4f2.setContent(html_4293c398843592cd8c73c53f98779e45);
+            
+        
+
+        circle_marker_33e7af3f59925e570046ac13822b4c5a.bindPopup(popup_102a06395083213bf5316c111fc2d4f2)
+        ;
+
+        
+    
+    
+            circle_marker_33e7af3f59925e570046ac13822b4c5a.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 169
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e97ac65f409e2b378a03be53ba642de1 = L.circleMarker(
+                [-22.9455739, -42.963386],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_f70b0ee484f5225db784a5cf2aa0d579 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_97ab82af34d53e0159cb1ff32cc2ae0f = $(`<div id="html_97ab82af34d53e0159cb1ff32cc2ae0f" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 595<br><b>Lines</b>: E21, E32, E33</div>`)[0];
+                popup_f70b0ee484f5225db784a5cf2aa0d579.setContent(html_97ab82af34d53e0159cb1ff32cc2ae0f);
+            
+        
+
+        circle_marker_e97ac65f409e2b378a03be53ba642de1.bindPopup(popup_f70b0ee484f5225db784a5cf2aa0d579)
+        ;
+
+        
+    
+    
+            circle_marker_e97ac65f409e2b378a03be53ba642de1.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 595
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_15c7890c81a16118a88ce469a3ec914b = L.circleMarker(
+                [-22.94484, -42.9626363],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_08b1b5e15527ceac80faf4d94f8ee4ad = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_bf5ca9441f3ccca21139e1c12ff8d78f = $(`<div id="html_bf5ca9441f3ccca21139e1c12ff8d78f" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 456<br><b>Lines</b>: E21, E30, E30A, E32, E33</div>`)[0];
+                popup_08b1b5e15527ceac80faf4d94f8ee4ad.setContent(html_bf5ca9441f3ccca21139e1c12ff8d78f);
+            
+        
+
+        circle_marker_15c7890c81a16118a88ce469a3ec914b.bindPopup(popup_08b1b5e15527ceac80faf4d94f8ee4ad)
+        ;
+
+        
+    
+    
+            circle_marker_15c7890c81a16118a88ce469a3ec914b.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 456
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_982adcbeaf1c6c7c30053b1450ee084f = L.circleMarker(
+                [-22.9408327, -42.9586681],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_f335ec89c72f1afa98c595f246648ea4 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_118c87e89e055f5eb1717b1f7d9abcba = $(`<div id="html_118c87e89e055f5eb1717b1f7d9abcba" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 28 | Entrada Mcmv Itaipuaçu<br><b>Lines</b>: E28, E30B, E30E</div>`)[0];
+                popup_f335ec89c72f1afa98c595f246648ea4.setContent(html_118c87e89e055f5eb1717b1f7d9abcba);
+            
+        
+
+        circle_marker_982adcbeaf1c6c7c30053b1450ee084f.bindPopup(popup_f335ec89c72f1afa98c595f246648ea4)
+        ;
+
+        
+    
+    
+            circle_marker_982adcbeaf1c6c7c30053b1450ee084f.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 28 | Entrada Mcmv Itaipuaçu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_922df52fb56d1701ae84217db4da1345 = L.circleMarker(
+                [-22.9344381, -42.9547539],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_823cce48d0ce4f26ca6fec207c275b7b = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_e5d6a01c41b03c6ec8030f469f66fee7 = $(`<div id="html_e5d6a01c41b03c6ec8030f469f66fee7" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 3<br><b>Lines</b>: E16, E26, E28, E30, E30A, E30B</div>`)[0];
+                popup_823cce48d0ce4f26ca6fec207c275b7b.setContent(html_e5d6a01c41b03c6ec8030f469f66fee7);
+            
+        
+
+        circle_marker_922df52fb56d1701ae84217db4da1345.bindPopup(popup_823cce48d0ce4f26ca6fec207c275b7b)
+        ;
+
+        
+    
+    
+            circle_marker_922df52fb56d1701ae84217db4da1345.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 3
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d956ac954b76248dd2a6cd3c5ec43f63 = L.circleMarker(
+                [-22.9332678, -42.9543191],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_bf7b67e2e17be98655f7f27e0ebfb525 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_ec489f8a959c5873f4bc3fcf5bd2b19e = $(`<div id="html_ec489f8a959c5873f4bc3fcf5bd2b19e" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 199<br><b>Lines</b>: E16, E26, E28, E30, E30A, E30B</div>`)[0];
+                popup_bf7b67e2e17be98655f7f27e0ebfb525.setContent(html_ec489f8a959c5873f4bc3fcf5bd2b19e);
+            
+        
+
+        circle_marker_d956ac954b76248dd2a6cd3c5ec43f63.bindPopup(popup_bf7b67e2e17be98655f7f27e0ebfb525)
+        ;
+
+        
+    
+    
+            circle_marker_d956ac954b76248dd2a6cd3c5ec43f63.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 199
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a66292a37275582ac8d5bd9548f4d6fe = L.circleMarker(
+                [-22.9321321, -42.9540648],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_da0232043f7c7b20524bea2c22d78d1a = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_45d0d36b6800635376ebc616ca7ab2f6 = $(`<div id="html_45d0d36b6800635376ebc616ca7ab2f6" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 373<br><b>Lines</b>: E16, E26, E28, E30, E30A, E30B</div>`)[0];
+                popup_da0232043f7c7b20524bea2c22d78d1a.setContent(html_45d0d36b6800635376ebc616ca7ab2f6);
+            
+        
+
+        circle_marker_a66292a37275582ac8d5bd9548f4d6fe.bindPopup(popup_da0232043f7c7b20524bea2c22d78d1a)
+        ;
+
+        
+    
+    
+            circle_marker_a66292a37275582ac8d5bd9548f4d6fe.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 373
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8ac20cfd4376e683299f10198731bc30 = L.circleMarker(
+                [-22.9309591, -42.9533997],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#eb6834", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_2aecd58f982691dba1205d6a5d4959fc = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_757e5d30d07d6c6c6d29684dfa2ba875 = $(`<div id="html_757e5d30d07d6c6c6d29684dfa2ba875" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Avenida Carlos Marighella, 12<br>Avenida Carlos Marighella, 14<br>Avenida Carlos Marighella, 6<br>Avenida Carlos Mariguella, 9700<br><b>Lines</b>: E21, E30, E30A, E32, E32A, E35, E36<br><i>approximate geocode</i></div>`)[0];
+                popup_2aecd58f982691dba1205d6a5d4959fc.setContent(html_757e5d30d07d6c6c6d29684dfa2ba875);
+            
+        
+
+        circle_marker_8ac20cfd4376e683299f10198731bc30.bindPopup(popup_2aecd58f982691dba1205d6a5d4959fc)
+        ;
+
+        
+    
+    
+            circle_marker_8ac20cfd4376e683299f10198731bc30.bindTooltip(
+                `<div>
+                     Avenida Carlos Marighella, 12
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_afc15723561c707a6dcc925f9393b57b = L.circleMarker(
+                [-22.9255201, -42.9504051],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_f12d03021563b32a0645b69a15f8c13f = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_acc3404b681dcb0309244f3752d15671 = $(`<div id="html_acc3404b681dcb0309244f3752d15671" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 500<br><b>Lines</b>: E16, E26, E28, E30, E30A, E30B</div>`)[0];
+                popup_f12d03021563b32a0645b69a15f8c13f.setContent(html_acc3404b681dcb0309244f3752d15671);
+            
+        
+
+        circle_marker_afc15723561c707a6dcc925f9393b57b.bindPopup(popup_f12d03021563b32a0645b69a15f8c13f)
+        ;
+
+        
+    
+    
+            circle_marker_afc15723561c707a6dcc925f9393b57b.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 500
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f4e9978137888a4459f1f98b3299ffd1 = L.circleMarker(
+                [-22.9171788, -42.9507319],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_d3c46a6a2f231837b30553291d479649 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_3aa1fcbd3dd6a60bc6a92f5a6977d276 = $(`<div id="html_3aa1fcbd3dd6a60bc6a92f5a6977d276" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 211<br><b>Lines</b>: E16, E26, E28, E30B</div>`)[0];
+                popup_d3c46a6a2f231837b30553291d479649.setContent(html_3aa1fcbd3dd6a60bc6a92f5a6977d276);
+            
+        
+
+        circle_marker_f4e9978137888a4459f1f98b3299ffd1.bindPopup(popup_d3c46a6a2f231837b30553291d479649)
+        ;
+
+        
+    
+    
+            circle_marker_f4e9978137888a4459f1f98b3299ffd1.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 211
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_92191cc3dddf278fa43c8d1175d8d3df = L.circleMarker(
+                [-22.9150762, -42.9509802],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_261b636161594060515efe688205d037 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_0516e69822c9e977ed835f58384e7d3a = $(`<div id="html_0516e69822c9e977ed835f58384e7d3a" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 300a<br><b>Lines</b>: E21, E30, E30A, E30B, E36</div>`)[0];
+                popup_261b636161594060515efe688205d037.setContent(html_0516e69822c9e977ed835f58384e7d3a);
+            
+        
+
+        circle_marker_92191cc3dddf278fa43c8d1175d8d3df.bindPopup(popup_261b636161594060515efe688205d037)
+        ;
+
+        
+    
+    
+            circle_marker_92191cc3dddf278fa43c8d1175d8d3df.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 300a
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a4244f391c8c2787a56cf5416106d2da = L.circleMarker(
+                [-22.9135326, -42.949205],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_2ad1b7ab13c1b27a9b502fb35434e7e5 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_5a47993562dea964224f5c0c997daa38 = $(`<div id="html_5a47993562dea964224f5c0c997daa38" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 300<br><b>Lines</b>: E30, E30A, E36</div>`)[0];
+                popup_2ad1b7ab13c1b27a9b502fb35434e7e5.setContent(html_5a47993562dea964224f5c0c997daa38);
+            
+        
+
+        circle_marker_a4244f391c8c2787a56cf5416106d2da.bindPopup(popup_2ad1b7ab13c1b27a9b502fb35434e7e5)
+        ;
+
+        
+    
+    
+            circle_marker_a4244f391c8c2787a56cf5416106d2da.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 300
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_df0cd4f63b326aab5973a05343017fe4 = L.circleMarker(
+                [-22.912868, -42.9486858],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_4702a278eb17b2c408245fdf9ece1033 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_908e659a188317ca8c07ed0c7956c041 = $(`<div id="html_908e659a188317ca8c07ed0c7956c041" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 1418<br><b>Lines</b>: E16, E21, E26, E28, E30B, E36</div>`)[0];
+                popup_4702a278eb17b2c408245fdf9ece1033.setContent(html_908e659a188317ca8c07ed0c7956c041);
+            
+        
+
+        circle_marker_df0cd4f63b326aab5973a05343017fe4.bindPopup(popup_4702a278eb17b2c408245fdf9ece1033)
+        ;
+
+        
+    
+    
+            circle_marker_df0cd4f63b326aab5973a05343017fe4.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 1418
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c63367130540bc484345e27d9e196ebb = L.circleMarker(
+                [-22.9115829, -42.946687],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_1672d84b637abe6a21ed8883bc49482b = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_832e91e12036a156456aab3decb68a91 = $(`<div id="html_832e91e12036a156456aab3decb68a91" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 402<br><b>Lines</b>: E16, E26, E28, E30, E30A, E30B, E36</div>`)[0];
+                popup_1672d84b637abe6a21ed8883bc49482b.setContent(html_832e91e12036a156456aab3decb68a91);
+            
+        
+
+        circle_marker_c63367130540bc484345e27d9e196ebb.bindPopup(popup_1672d84b637abe6a21ed8883bc49482b)
+        ;
+
+        
+    
+    
+            circle_marker_c63367130540bc484345e27d9e196ebb.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 402
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8b8c5d57308ce7bf5471637a3aa58bed = L.circleMarker(
+                [-22.9108602, -42.9444824],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_735e9f799d3e899fac07d1844ed735b0 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_186bae23490f1348aa8aaa24f8f60340 = $(`<div id="html_186bae23490f1348aa8aaa24f8f60340" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 1190<br><b>Lines</b>: E16, E21, E26, E28, E30, E30A, E30B, E36</div>`)[0];
+                popup_735e9f799d3e899fac07d1844ed735b0.setContent(html_186bae23490f1348aa8aaa24f8f60340);
+            
+        
+
+        circle_marker_8b8c5d57308ce7bf5471637a3aa58bed.bindPopup(popup_735e9f799d3e899fac07d1844ed735b0)
+        ;
+
+        
+    
+    
+            circle_marker_8b8c5d57308ce7bf5471637a3aa58bed.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 1190
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c00c12b555656d296355c27247d94135 = L.circleMarker(
+                [-22.9142375, -42.9371077],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_4177a9d5e7a0a870d1517d178ca718b9 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_6e54120c988073e19de5a543d005eb6d = $(`<div id="html_6e54120c988073e19de5a543d005eb6d" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 75<br><b>Lines</b>: E30</div>`)[0];
+                popup_4177a9d5e7a0a870d1517d178ca718b9.setContent(html_6e54120c988073e19de5a543d005eb6d);
+            
+        
+
+        circle_marker_c00c12b555656d296355c27247d94135.bindPopup(popup_4177a9d5e7a0a870d1517d178ca718b9)
+        ;
+
+        
+    
+    
+            circle_marker_c00c12b555656d296355c27247d94135.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 75
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9a28d69105ea82106fbead8a7d4e81ef = L.circleMarker(
+                [-22.9164613, -42.9352068],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_2ca050cb794fc8c228926fe9f855d766 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_1baca56f7c5768e2ca2d67370f3a9129 = $(`<div id="html_1baca56f7c5768e2ca2d67370f3a9129" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Rua Carlos Mariguella, 28<br><b>Lines</b>: E30, E30A</div>`)[0];
+                popup_2ca050cb794fc8c228926fe9f855d766.setContent(html_1baca56f7c5768e2ca2d67370f3a9129);
+            
+        
+
+        circle_marker_9a28d69105ea82106fbead8a7d4e81ef.bindPopup(popup_2ca050cb794fc8c228926fe9f855d766)
+        ;
+
+        
+    
+    
+            circle_marker_9a28d69105ea82106fbead8a7d4e81ef.bindTooltip(
+                `<div>
+                     Rua Carlos Mariguella, 28
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_76c851007b1701c902a1e63c39d7de5f = L.circleMarker(
+                [-22.9184461, -42.9338312],
+                {"bubblingMouseEvents": true, "color": "#ffffff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2a78d6", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1.5}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+        var popup_e1e082af24dd5c69edcc459160351675 = L.popup({
+  "maxWidth": 320,
+});
+
+        
+            
+                var html_796fad7aaebde5411608ba533219fd4d = $(`<div id="html_796fad7aaebde5411608ba533219fd4d" style="width: 100.0%; height: 100.0%;"><b>Stop(s)</b><br>Avenida Carlos Marighella, 11<br><b>Lines</b>: E21, E36</div>`)[0];
+                popup_e1e082af24dd5c69edcc459160351675.setContent(html_796fad7aaebde5411608ba533219fd4d);
+            
+        
+
+        circle_marker_76c851007b1701c902a1e63c39d7de5f.bindPopup(popup_e1e082af24dd5c69edcc459160351675)
+        ;
+
+        
+    
+    
+            circle_marker_76c851007b1701c902a1e63c39d7de5f.bindTooltip(
+                `<div>
+                     Avenida Carlos Marighella, 11
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_59eb5364c74073624d8b326b4dbbc278 = L.marker(
+                [-22.9562617, -42.9791142],
+                {
+}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            var icon_97b36aa31ab33722f605363578ef121e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "plus",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_59eb5364c74073624d8b326b4dbbc278.bindTooltip(
+                `<div>
+                     Suggested stop: 941 m gap
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_59eb5364c74073624d8b326b4dbbc278.setIcon(icon_97b36aa31ab33722f605363578ef121e);
+            
+    
+            var marker_d5c9b7f9e6908cc215932bf8d937ca66 = L.marker(
+                [-22.948085149999997, -42.96748985],
+                {
+}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            var icon_6f1fc399795d88bf58e31e72cbbda0bc = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "plus",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_d5c9b7f9e6908cc215932bf8d937ca66.bindTooltip(
+                `<div>
+                     Suggested stop: 1009 m gap
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d5c9b7f9e6908cc215932bf8d937ca66.setIcon(icon_6f1fc399795d88bf58e31e72cbbda0bc);
+            
+    
+            var marker_9771d23f80a093ab7c912834baa0cb4e = L.marker(
+                [-22.94283635, -42.9606522],
+                {
+}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            var icon_782cd4fdbe2039866690d13b07e2b14e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "plus",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_9771d23f80a093ab7c912834baa0cb4e.bindTooltip(
+                `<div>
+                     Suggested stop: 603 m gap
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9771d23f80a093ab7c912834baa0cb4e.setIcon(icon_782cd4fdbe2039866690d13b07e2b14e);
+            
+    
+            var marker_59804031259f150b206091237833c467 = L.marker(
+                [-22.9376354, -42.956711],
+                {
+}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            var icon_8324e2baafd1c6ca0c2dd90f38d1e734 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "plus",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_59804031259f150b206091237833c467.bindTooltip(
+                `<div>
+                     Suggested stop: 816 m gap
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_59804031259f150b206091237833c467.setIcon(icon_8324e2baafd1c6ca0c2dd90f38d1e734);
+            
+    
+            var marker_b08b3cd8ab295fd0c423ff9c1f68abfa = L.marker(
+                [-22.928239599999998, -42.951902399999994],
+                {
+}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            var icon_c8ecca4b1744f7bf12a5e7f72420386e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "plus",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_b08b3cd8ab295fd0c423ff9c1f68abfa.bindTooltip(
+                `<div>
+                     Suggested stop: 678 m gap
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b08b3cd8ab295fd0c423ff9c1f68abfa.setIcon(icon_c8ecca4b1744f7bf12a5e7f72420386e);
+            
+    
+            var marker_6b1376e198977a9f6a2546540634c997 = L.marker(
+                [-22.92134945, -42.9505685],
+                {
+}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            var icon_3c38d6954661b805a975ea65eccf3b6f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "plus",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_6b1376e198977a9f6a2546540634c997.bindTooltip(
+                `<div>
+                     Suggested stop: 928 m gap
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_6b1376e198977a9f6a2546540634c997.setIcon(icon_3c38d6954661b805a975ea65eccf3b6f);
+            
+    
+            var marker_2ec70822bf4ebfc91456553f9962181e = L.marker(
+                [-22.91254885, -42.94079505],
+                {
+}
+            ).addTo(map_efb57eee5051b6f4280ee31f9edf951b);
+        
+    
+            var icon_48e9e435af4e2ba67529e8bd3dccfb76 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "plus",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_2ec70822bf4ebfc91456553f9962181e.bindTooltip(
+                `<div>
+                     Suggested stop: 844 m gap
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_2ec70822bf4ebfc91456553f9962181e.setIcon(icon_48e9e435af4e2ba67529e8bd3dccfb76);
+            
+</script>
+</html>
