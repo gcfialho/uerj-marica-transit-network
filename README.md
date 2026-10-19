@@ -1,75 +1,84 @@
 # Maricá Transit Network
 
-Graph model of the public bus network of Maricá (RJ, Brazil): Moovit stop sequences,
-geocoded and turned into a NetworkX directed graph for centrality, connectivity and
-shortest-route analysis, with interactive Folium maps.
+A graph model of the public bus network of Maricá (RJ, Brazil). It scrapes stop sequences
+from Moovit, geocodes them and analyses the result as a NetworkX directed graph, with
+interactive maps.
 
-[![CI](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml/badge.svg)](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml)
-![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB)
-[![uv](https://img.shields.io/badge/deps-uv-DE5FE9)](https://docs.astral.sh/uv/)
-[![Ruff](https://img.shields.io/badge/lint-ruff-D7FF64)](https://docs.astral.sh/ruff/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![CI](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml/badge.svg)](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml) ![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB) [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-[![Interactive map of the Maricá bus network](docs/assets/map-preview.png)](https://gcfialho.github.io/uerj-marica-transit-network/)
+[![Interactive map of the Maricá bus network](docs/img/network.png)](https://gcfialho.github.io/uerj-marica-transit-network/)
 
-**Interactive maps:** [full network](https://gcfialho.github.io/uerj-marica-transit-network/) ·
-[Itaipuaçu](https://gcfialho.github.io/uerj-marica-transit-network/itaipuacu.html) ·
-[shortest route](https://gcfialho.github.io/uerj-marica-transit-network/route-optimization.html) ·
-[stop spacing on Av. Carlos Marighella](https://gcfialho.github.io/uerj-marica-transit-network/main-road-coverage.html)
-(the same files are in [`docs/`](docs/))
+**Live map:** <https://gcfialho.github.io/uerj-marica-transit-network/>. Also available:
+[Itaipuaçu](https://gcfialho.github.io/uerj-marica-transit-network/itaipuacu.html),
+[shortest route](https://gcfialho.github.io/uerj-marica-transit-network/route-optimization.html) and
+[stop spacing on Av. Carlos Marighella](https://gcfialho.github.io/uerj-marica-transit-network/main-road-coverage.html).
+The source files are in [`docs/`](docs/).
 
-Built for the Discrete Mathematics II course (Computer Engineering, UERJ). The accompanying
-article is in Portuguese: [`article/`](article/Artigo_Matematica_Discreta_GCF_Final.pdf).
+## Highlights
 
-## Pipeline
-
-```mermaid
-flowchart LR
-    A[Moovit line pages] -->|scraper, opt-in| B[(data/raw<br/>stop sequences)]
-    B -->|Nominatim + Google<br/>geocoder, opt-in| C[(data/processed<br/>geocoded stops)]
-    C --> D[Quality flags<br/>approximate / out of area]
-    D --> E[NetworkX DiGraph<br/>stops = nodes, hops = edges]
-    E --> F[analyze<br/>SCCs, centrality, paths]
-    E --> G[route<br/>Dijkstra / A*]
-    D --> H[coverage<br/>stop spacing on a road]
-    E --> I[map<br/>Folium HTML + PNG]
-```
-
-The committed CSV snapshot is the default input, so everything runs offline. Scraping and
-geocoding only happen with `--force-rescrape` / `--force-regeocode`.
+- **Scraping:** a Moovit scraper with retries and back-off collects 46 EPT lines and their
+  ordered stop lists. It only runs when asked, with `--force-rescrape`.
+- **Geocoding with caching:** each unique stop name is geocoded once, with Nominatim first
+  and Google as a fallback. Results are saved to CSV, so normal runs need no network or API
+  key. Every stop gets a quality flag (precise, approximate or out of area).
+- **Graph modelling:** stops are nodes and consecutive stops of a line are weighted
+  directed edges. Metrics include strongly and weakly connected components, reciprocity,
+  degree and betweenness centrality, and shortest paths.
+- **Spatial analysis:** region subgraphs (Itaipuaçu), shortest routes by Dijkstra
+  cross-checked with A\*, the fewest-transfer way to ride a route, and stop-spacing gaps
+  along a road.
+- **Maps:** Folium maps built from GeoJSON layers, published to GitHub Pages from `docs/`,
+  plus a Matplotlib preview that renders offline.
 
 ## Quickstart
 
-Requires [uv](https://docs.astral.sh/uv/). No API keys or network access needed.
+Requires [uv](https://docs.astral.sh/uv/). Runs offline from the committed data snapshot.
 
 ```bash
 git clone https://github.com/gcfialho/uerj-marica-transit-network.git
 cd uerj-marica-transit-network
 uv sync
-uv run marica-transit analyze      # network statistics for Maricá and Itaipuaçu
-uv run marica-transit all          # regenerate every map, the PNG preview and docs/network_stats.json
+uv run marica-transit analyze      # network statistics (Maricá + Itaipuaçu)
+uv run marica-transit route        # shortest route across Jardim Atlântico
+uv run marica-transit coverage     # stop spacing along Av. Carlos Marighella
+uv run marica-transit all          # regenerate every map, the PNG and docs/network_stats.json
 ```
 
-## CLI
+To re-scrape or re-geocode, which needs the network, run
+`uv sync --extra fetch` and add `--force-rescrape` or `--force-regeocode` to any command.
+Google geocoding reads `GOOGLE_MAPS_API_KEY` (see [`.env.example`](.env.example) and use
+`uv run --env-file .env ...`).
 
-| Command | What it does |
+## How it works
+
+```mermaid
+flowchart LR
+    A[Moovit line pages] -->|scraper, opt-in| B[(data/raw<br/>stop sequences)]
+    B -->|Nominatim + Google, opt-in| C[(data/processed<br/>geocoded stops)]
+    C --> D[Quality flags<br/>approximate / out of area]
+    D --> E[NetworkX DiGraph]
+    E --> F[analyze<br/>components, centrality, paths]
+    E --> G[route<br/>Dijkstra / A*]
+    D --> H[coverage<br/>stop spacing on a road]
+    E --> I[map<br/>Folium HTML + PNG]
+```
+
+| Module | Responsibility |
 |---|---|
-| `build-graph [--graphml PATH]` | Build the graph and export it as GraphML (default `output/marica_network.graphml`) |
-| `analyze [--region marica itaipuacu] [--top N] [--json PATH]` | Size, density, reciprocity, weak/strong components, shortest paths, top stops by betweenness, degree and lines served |
-| `map [--out-dir docs] [--png PATH]` | Interactive maps of the full network and Itaipuaçu, plus a static PNG |
-| `route [--from STOP --to STOP \| --from-coord=LAT,LON --to-coord=LAT,LON] [--region]` | Shortest route (Dijkstra, cross-checked with A\*) and the fewest-transfer ride plan |
-| `coverage [--street NAME ...] [--max-gap-m 450] [--region]` | Stop spacing along a road, with a suggested stop for every gap |
-| `all [--out-dir docs]` | Run everything above with the case-study defaults |
+| `cli.py` | `marica-transit build-graph \| analyze \| map \| route \| coverage \| all` |
+| `pipeline.py` | Loads the committed snapshot; scrapes or geocodes only when forced |
+| `data.py` | CSV schema and validation, geocode quality flags |
+| `geo.py` | Haversine distance, region bounding boxes |
+| `graph.py` | Graph construction, induced region subgraphs, GraphML export |
+| `analysis.py` | Network statistics, centrality, Dijkstra / A\*, ride plans |
+| `coverage.py` | Ordering stops along a road and detecting gaps |
+| `maps.py` | Folium maps and the static Matplotlib preview |
+| `scraper.py`, `geocoder.py` | Network access (optional `fetch` extra) |
 
-Every command accepts `--data-dir`, `-v`, and the opt-in network flags `--force-rescrape`,
-`--force-regeocode`, `--geocoder {both,nominatim,google}` and `--contact EMAIL`. These need the
-`fetch` extra (`uv sync --extra fetch`), and Google needs `GOOGLE_MAPS_API_KEY`
-(see [`.env.example`](.env.example); `uv run --env-file .env ...`).
+## Results
 
-## Key findings
-
-All numbers come from `uv run marica-transit analyze`; the full output is in
-[`docs/network_stats.json`](docs/network_stats.json).
+Computed by `uv run marica-transit analyze` from the committed snapshot. The full output is
+in [`docs/network_stats.json`](docs/network_stats.json).
 
 | | Maricá | Itaipuaçu subgraph |
 |---|---:|---:|
@@ -79,110 +88,120 @@ All numbers come from `uv run marica-transit analyze`; the full output is in
 | Density | 0.0021 | 0.0039 |
 | Reciprocity (links that also run in reverse) | 5.4% | 5.6% |
 | Weakly connected components | 1 | 23 |
-| Strongly connected components (largest) | 113 (494 stops, 80%) | 145 (120 stops) |
+| Strongly connected components (largest) | 113 (494 stops) | 145 (120 stops) |
 | Mean shortest path in the largest SCC | 31.2 stops | 13.5 stops |
 | Diameter of the largest SCC | 109 stops | 36 stops |
 | Median link, precisely geocoded stops only | 467 m | 491 m |
 
-- **Rodoviária do Povo de Maricá is the main hub by line count:** 27 of the 46 lines stop
-  there, followed by 2ª Entrada de Maricá (13) and Terminal de Itaipuaçu (12).
-- **The RJ-106 (Rodovia Amaral Peixoto) corridor carries the network.** Its stops hold the
-  top 3 betweenness scores (0.30 to 0.32), meaning roughly 30% of all stop-to-stop shortest
-  paths pass through each of them. Betweenness is computed on hop counts, so it does not depend on geocoding.
+- **Rodoviária do Povo de Maricá is the main hub:** 27 of the 46 lines stop there, followed
+  by 2ª Entrada de Maricá (13) and Terminal de Itaipuaçu (12).
+- **The Rodovia Amaral Peixoto (RJ-106) corridor carries the network.** Its stops hold the
+  top 3 betweenness scores (0.30 to 0.32), meaning roughly 30% of all shortest paths pass
+  through each of them.
 - **In Itaipuaçu,** Terminal de Itaipuaçu ranks first by betweenness (0.158), and two Rua
-  Carlos Mariguella stops are in the top 4, which supports treating that road as the
-  district's spine.
+  Carlos Mariguella stops are in the top 4.
 - **The network is weakly but not strongly connected.** The snapshot has one stop sequence
-  per line code, so few links run both ways (reciprocity 5.4%), and 120 stops sit outside
-  the largest strongly connected component.
-- **Case studies** ([details](analyses/)): the shortest route across Jardim Atlântico is
-  6.62 km over 6 stops with 1 transfer (E20, then E32). Along Av. Carlos Marighella, 23 stop
-  locations over 8.96 km have a median spacing of 254 m, and 7 gaps exceed 450 m (largest
-  1,009 m).
+  per line, so only 5.4% of links run both ways, and 120 stops sit outside the largest
+  strongly connected component.
+- **Shortest route across Jardim Atlântico:** 6.62 km over 6 stops with 1 transfer (E20,
+  then E32). Dijkstra and A\* return the same path. See
+  [notes](analyses/route-optimization/README.md).
+- **Stop spacing on Av. Carlos Marighella:** 23 stop locations over 8.96 km, median spacing
+  254 m, and 7 gaps above 450 m (the largest is 1,009 m). See
+  [notes](analyses/main-road-coverage/README.md).
 
-![Static preview of the network](docs/assets/network-preview.png)
+![Static preview of the network](docs/img/network-static.png)
 
-### Corrections to the original course scripts
+## Methodology
 
-- Links shared by several lines recorded only the first one, because a line was appended
-  only when the new distance was *strictly shorter*.
-- The Itaipuaçu case study re-linked stops after filtering, so lines leaving and re-entering
-  the area were joined across the gap: 37 of its 267 links (14%) were not real.
-- Keying nodes by coordinate merged 33 different stops geocoded to one street-level point
-  into an artificial hub, reported as the most central stop (degree 40).
-- The full-network map was never regenerated while the Itaipuaçu filter matched any stop,
-  the filtered CSV lost its stop-name column, 67 repeated consecutive stops became
-  self-loops, and the stop-name cleaning step was defined but never called.
-- The pickled graph cache was removed: loading a pickle from a cloned repo can execute
-  arbitrary code, and its freshness check relied on file modification times, which `git
-  clone` does not preserve. The graph is rebuilt from CSV (under a second) and can be
-  exported as GraphML.
-
-Figures in the article come from the original scripts; this README reports what the
-current code computes.
-
-## Data sources and limitations
-
-- **Stops and line sequences:** scraped from [Moovit](https://moovitapp.com)'s public pages
-  for the EPT (Empresa Pública de Transportes de Maricá) lines around June 2025 (first
-  committed on 2025-06-25): 1,718 stop visits, 619 distinct stop names, 46 lines. Moovit is
-  crowd-sourced and this is a single snapshot, with no timetables or frequencies.
-- **Geocoding:** stop names were geocoded with Nominatim (OpenStreetMap) first and the Google
-  Geocoding API as a fallback. Accuracy is the main limitation:
-  - 251 of the 619 stop names (41%) share their coordinate with at least two other names,
-    which means a street- or neighbourhood-level fallback rather than the real stop
-    position. They are kept and shown in orange.
-  - 5 names resolved outside Maricá (for example, Maricá's Bambuí neighbourhood was placed in
-    Bambuí, Minas Gerais, about 460 km away). They are dropped and their lines bridged over.
-  - 23% of links are longer than 5 km in a straight line, usually because a generic name
-    such as "Rua Nove, 58" matched a street with the same name elsewhere. Those links are
-    dashed on the maps.
-- **Distances** are straight lines between geocoded stops, not road distances. Treat
-  kilometre figures as indicative (the mean shortest path of 102 km in the full SCC is
-  inflated by the errors above). Topological results (components, hops, betweenness) are
-  not affected.
-- Re-scraping may conflict with Moovit's terms of service; check them before using
-  `--force-rescrape`.
+- **Graph model.** A node is a unique Moovit stop name, positioned at its geocoded
+  coordinate. A directed edge `u → v` exists when some line serves `v` right after `u`.
+  Each edge records every line that uses it and its length.
+  - Repeated consecutive stops are skipped, so there are no self-loops.
+  - Stops geocoded outside Maricá are dropped and their lines bridged over them, so routes
+    stay connected.
+  - Nodes are keyed by name rather than by coordinate. Otherwise, stops that share a
+    street-level geocode would merge into artificial hubs.
+- **Distance.** The haversine great-circle distance (mean Earth radius 6,371.0088 km).
+  - It differs from ellipsoidal distance by under 0.5%, which is far below the error in the
+    geocoded positions.
+  - A\* uses the same straight-line distance as its heuristic. Since no edge is shorter than
+    the straight line between its stops, the heuristic never overestimates, so A\* finds the
+    true shortest path.
+- **Geocode quality.** A coordinate shared by 3 or more distinct stop names is flagged
+  *approximate*. Coordinates outside the Maricá envelope are flagged *out of area*. Links
+  longer than 5 km are flagged *suspect*.
+- **Region filtering.** Itaipuaçu is the induced subgraph of the stops inside its bounding
+  box: an edge is kept only if both of its stops are inside. Stops are never re-linked
+  across the boundary.
+- **Analyses.**
+  - Betweenness is computed on hop counts, so it depends only on line topology and not on
+    geocoding.
+  - Average shortest paths and the diameter are measured within the largest strongly
+    connected component.
+  - When a coordinate matches several stops at the same spot, routing tries all of them
+    and keeps the shortest route.
+  - The ride plan picks the fewest line changes possible along the chosen path.
+  - The coverage study matches stops by street name, ignoring accents and case. It chains
+    them along the road starting from one end and flags every gap above the threshold.
 
 ## Project structure
 
 ```
-├── src/marica_transit/
-│   ├── cli.py          # argparse entry point: marica-transit <command>
-│   ├── pipeline.py     # offline-by-default data loading
-│   ├── data.py         # CSV schema, validation, geocode quality flags
-│   ├── geo.py          # haversine distance, bounding boxes
-│   ├── graph.py        # DiGraph construction, induced subgraphs, GraphML export
-│   ├── analysis.py     # network statistics, centrality, Dijkstra / A*, ride plans
-│   ├── coverage.py     # stop spacing along a road
-│   ├── maps.py         # Folium maps and the Matplotlib preview
-│   ├── scraper.py      # Moovit scraper (opt-in, `fetch` extra)
-│   └── geocoder.py     # Nominatim / Google geocoder (opt-in, `fetch` extra)
+├── src/marica_transit/   # package (see "How it works")
 ├── data/
-│   ├── raw/moovit_stops_raw.csv             # scraped snapshot
-│   └── processed/moovit_stops_geocoded.csv  # + latitude, longitude, geocoded address
-├── analyses/           # case-study notes: route optimisation, main-road coverage
-├── docs/               # GitHub Pages: generated maps, preview images, network_stats.json
-├── tests/              # pytest suite with a tiny hand-checked fixture network
-└── article/            # course article (Portuguese, PDF)
+│   ├── raw/              # scraped stop sequences (Moovit snapshot)
+│   └── processed/        # + latitude, longitude, geocoded address
+├── analyses/             # case-study notes: route optimisation, main-road coverage
+├── docs/                 # GitHub Pages: maps, img/, network_stats.json
+├── tests/                # pytest suite + fixture network
+└── article/              # course article (Portuguese, PDF)
 ```
 
 ## Testing
 
 ```bash
-uv run pytest                # 50 tests
+uv run pytest
 uv run ruff check . && uv run ruff format --check .
 ```
 
-The tests use an eight-stop fixture whose answers can be checked by hand: haversine
-distances, quality flags, graph construction (bridging, self-loops, shared links), induced
-subgraphs, component counts, Dijkstra and A\* agreement, ride plans, road ordering and gap
-detection, and CLI smoke runs. CI runs the same checks on Python 3.12 and 3.13.
+The 50 tests run on an eight-stop fixture whose answers can be checked by hand. They cover:
+
+- haversine distances and geocode quality flags;
+- graph construction: bridging over dropped stops, no self-loops, lines shared on a link;
+- induced subgraphs and component counts;
+- Dijkstra and A\* agreement, and ride plans;
+- road ordering and gap detection;
+- CLI smoke runs.
+
+CI runs lint, the tests and an offline pipeline run on Python 3.12 and 3.13.
+
+## Data sources & limitations
+
+Built for the Discrete Mathematics II course (Computer Engineering, UERJ). The accompanying
+article is in Portuguese, at [`article/`](article/Artigo_Matematica_Discreta_GCF_Final.pdf).
+It was co-authored with Pedro Mineiro Cordoeira, and its figures come from the original
+course scripts.
+
+- **Stops and lines:** Moovit public pages for the EPT (Empresa Pública de Transportes de
+  Maricá), collected around June 2025 (first committed 2025-06-25). The snapshot has 1,718
+  stop visits, 619 distinct stop names and 46 lines. The data is crowd-sourced and has no
+  timetables or frequencies.
+- **Geocoding accuracy is the main limitation:**
+  - 251 of the 619 stop names (41%) share a coordinate with at least two other names,
+    which points to a street-level fallback. They are shown in orange.
+  - 5 names resolved outside Maricá and are excluded. For example, Maricá's Bambuí
+    neighbourhood was placed in Bambuí, Minas Gerais, about 460 km away.
+  - 23% of links exceed 5 km in a straight line, usually because a generic name such as
+    "Rua Nove, 58" matched a street with the same name elsewhere. These links are dashed
+    on the maps.
+- **Distances** are straight lines between geocoded stops, not road distances, so treat
+  kilometre figures as indicative. For example, the 102 km mean shortest path in the full
+  network's largest SCC is inflated by the errors above. Topological results (components,
+  hop counts, betweenness) are unaffected.
+- Re-scraping may conflict with Moovit's terms of service; check them before using
+  `--force-rescrape`.
 
 ## Author
 
-**Guilherme Fialho**, Machine Learning Engineer (GenAI/LLMs) and Data Engineer.
-[GitHub](https://github.com/gcfialho) · [LinkedIn](https://www.linkedin.com/in/guilherme-cagide-fialho/)
-
-The article was co-authored with Pedro Mineiro Cordoeira. Code released under the
-[MIT License](LICENSE).
+Guilherme Fialho · Machine Learning Engineer (GenAI/LLMs) and Data Engineer · [LinkedIn](https://www.linkedin.com/in/guilherme-cagide-fialho/) · [GitHub](https://github.com/gcfialho)
