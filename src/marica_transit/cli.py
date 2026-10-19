@@ -172,7 +172,7 @@ def cmd_all(args: argparse.Namespace) -> None:
             cmd_analyze,
             {"region": ["marica", "itaipuacu"], "top": 10, "json": docs / "network_stats.json"},
         ),
-        (cmd_map, {"no_png": False, "png": docs / "assets" / "network-preview.png"}),
+        (cmd_map, {"no_png": False, "png": docs / "img" / "network-static.png"}),
         (
             cmd_route,
             {
@@ -248,7 +248,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("map", parents=[common], help="write interactive maps and a PNG preview")
     p.add_argument("--out-dir", type=Path, default=Path("docs"))
-    p.add_argument("--png", type=Path, default=Path("docs/assets/network-preview.png"))
+    p.add_argument("--png", type=Path, default=Path("docs/img/network-static.png"))
     p.add_argument("--no-png", action="store_true")
     p.set_defaults(func=cmd_map)
 
