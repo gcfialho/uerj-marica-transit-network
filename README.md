@@ -16,19 +16,21 @@ The source files are in [`docs/`](docs/).
 
 ## Highlights
 
-- **Scraping:** a Moovit scraper with retries and back-off collects 46 EPT lines and their
-  ordered stop lists. It only runs when asked, with `--force-rescrape`.
+- **Scraping with an opt-in fetcher:** a Moovit scraper with retries and back-off collects
+  46 EPT lines and their ordered stop lists. It runs only with `--force-rescrape`, from the
+  optional `fetch` extra.
 - **Geocoding with caching:** each unique stop name is geocoded once, with Nominatim first
   and Google as a fallback. Results are saved to CSV, so normal runs need no network or API
   key. Every stop gets a quality flag (precise, approximate or out of area).
-- **Graph modelling:** stops are nodes and consecutive stops of a line are weighted
-  directed edges. Metrics include strongly and weakly connected components, reciprocity,
-  degree and betweenness centrality, and shortest paths.
-- **Spatial analysis:** region subgraphs (Itaipuaçu), shortest routes by Dijkstra
-  cross-checked with A\*, the fewest-transfer way to ride a route, and stop-spacing gaps
-  along a road.
-- **Maps:** Folium maps built from GeoJSON layers, published to GitHub Pages from `docs/`,
-  plus a Matplotlib preview that renders offline.
+- **Graph modelling and centrality:** stops are nodes and consecutive stops of a line are
+  weighted directed edges. Metrics include strongly and weakly connected components,
+  reciprocity, degree and betweenness centrality, and shortest paths.
+- **Spatial analysis and maps:** region subgraphs (Itaipuaçu), Dijkstra routes
+  cross-checked with A\*, fewest-transfer ride plans and stop-spacing gaps along a road.
+  The results are drawn as Folium maps published to GitHub Pages from `docs/`.
+- **Bug audit:** the original course scripts were audited and their errors fixed. Among
+  them were fake links in the Itaipuaçu study, lost line attributions and an artificial hub
+  created by merging stops (see [Methodology](#methodology)).
 
 ## Quickstart
 
@@ -74,6 +76,18 @@ flowchart LR
 | `coverage.py` | Ordering stops along a road and detecting gaps |
 | `maps.py` | Folium maps and the static Matplotlib preview |
 | `scraper.py`, `geocoder.py` | Network access (optional `fetch` extra) |
+
+| Command | What it does |
+|---|---|
+| `build-graph [--graphml PATH]` | Build the graph and export GraphML (default `output/marica_network.graphml`) |
+| `analyze [--region marica itaipuacu] [--top N] [--json PATH]` | Components, density, reciprocity, shortest paths, top stops by betweenness, degree and lines served |
+| `map [--out-dir docs] [--png PATH]` | Interactive maps of the full network and Itaipuaçu, plus a static PNG |
+| `route [--from STOP --to STOP \| --from-coord=LAT,LON --to-coord=LAT,LON] [--region]` | Shortest route (Dijkstra, cross-checked with A\*) and the fewest-transfer ride plan |
+| `coverage [--street NAME ...] [--max-gap-m 450] [--region]` | Stop spacing along a road, with a suggested stop for every gap |
+| `all [--out-dir docs]` | Everything above with the case-study defaults |
+
+Every command accepts `--data-dir`, `-v` and the opt-in network flags `--force-rescrape`,
+`--force-regeocode`, `--geocoder {both,nominatim,google}` and `--contact EMAIL`.
 
 ## Results
 
@@ -144,6 +158,20 @@ in [`docs/network_stats.json`](docs/network_stats.json).
   - The ride plan picks the fewest line changes possible along the chosen path.
   - The coverage study matches stops by street name, ignoring accents and case. It chains
     them along the road starting from one end and flags every gap above the threshold.
+- **Fixes to the original course scripts:**
+  - A link shared by several lines kept only the first line. A line was added only when
+    its distance was strictly shorter, which never happens for the same two stops.
+  - The Itaipuaçu study re-linked stops after filtering, so lines leaving and re-entering
+    the area were joined across the gap: 37 of its 267 links (14%) were not real.
+  - Keying nodes by coordinate merged 33 stops geocoded to one street-level point into an
+    artificial hub, which was reported as the most central stop (degree 40).
+  - The full-network map was skipped whenever the region filter matched any stop.
+  - The filtered CSV lost its stop-name column.
+  - 67 repeated consecutive stops became self-loops.
+  - The stop-name cleaning step was never called.
+  - The pickled graph cache was removed: loading a pickle can execute code, and its
+    freshness check relied on file timestamps, which `git clone` does not preserve. The
+    graph is rebuilt from CSV instead.
 
 ## Project structure
 
@@ -178,10 +206,10 @@ CI runs lint, the tests and an offline pipeline run on Python 3.12 and 3.13.
 
 ## Data sources & limitations
 
-Built for the Discrete Mathematics II course (Computer Engineering, UERJ). The accompanying
-article is in Portuguese, at [`article/`](article/Artigo_Matematica_Discreta_GCF_Final.pdf).
-It was co-authored with Pedro Mineiro Cordoeira, and its figures come from the original
-course scripts.
+Built for the Discrete Mathematics II course (Computer Engineering, UERJ). Article reviewed
+by Pedro Mineiro Cordoeira. The article is in Portuguese, at
+[`article/`](article/Artigo_Matematica_Discreta_GCF_Final.pdf), and its figures come from the
+original course scripts.
 
 - **Stops and lines:** Moovit public pages for the EPT (Empresa Pública de Transportes de
   Maricá), collected around June 2025 (first committed 2025-06-25). The snapshot has 1,718
@@ -205,3 +233,5 @@ course scripts.
 ## Author
 
 Guilherme Fialho · Machine Learning Engineer (GenAI/LLMs) and Data Engineer · [LinkedIn](https://www.linkedin.com/in/guilherme-cagide-fialho/) · [GitHub](https://github.com/gcfialho)
+
+Thanks to Pedro Mineiro Cordoeira for reviewing the article.
