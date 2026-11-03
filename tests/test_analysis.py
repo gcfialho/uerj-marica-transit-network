@@ -9,9 +9,10 @@ from marica_transit.analysis import (
     shortest_route_astar,
     summarize,
 )
+from marica_transit.graph import StopGraph
 
 
-def test_summary_structure(graph: nx.DiGraph) -> None:
+def test_summary_structure(graph: StopGraph) -> None:
     s = summarize(graph, top_k=3)
     assert (s.stops, s.edges, s.lines) == (7, 6, 4)
     assert s.weak_components == 2
@@ -24,7 +25,7 @@ def test_summary_structure(graph: nx.DiGraph) -> None:
     assert len(s.top_betweenness) == 3
 
 
-def test_summary_shortest_paths_in_largest_scc(graph: nx.DiGraph) -> None:
+def test_summary_shortest_paths_in_largest_scc(graph: StopGraph) -> None:
     s = summarize(graph)
     # In a directed 4-cycle every ordered pair is 1, 2 or 3 hops apart: mean 2, diameter 3.
     assert s.scc_avg_shortest_path_hops == pytest.approx(2.0)
@@ -32,7 +33,7 @@ def test_summary_shortest_paths_in_largest_scc(graph: nx.DiGraph) -> None:
     assert s.scc_avg_shortest_path_km > 0
 
 
-def test_cycle_nodes_have_highest_betweenness(graph: nx.DiGraph) -> None:
+def test_cycle_nodes_have_highest_betweenness(graph: StopGraph) -> None:
     s = summarize(graph, top_k=4)
     assert {r.stop for r in s.top_betweenness} == {"Alpha", "Beta", "Gamma", "Delta"}
     assert "Alpha" in format_summary(s)
@@ -43,7 +44,7 @@ def test_summarize_rejects_empty_graph() -> None:
         summarize(nx.DiGraph())
 
 
-def test_dijkstra_and_astar_agree(graph: nx.DiGraph) -> None:
+def test_dijkstra_and_astar_agree(graph: StopGraph) -> None:
     route = shortest_route(graph, "Beta", "Alpha")
     astar = shortest_route_astar(graph, "Beta", "Alpha")
     assert route.stops == ["Beta", "Gamma", "Delta", "Alpha"]
@@ -53,12 +54,12 @@ def test_dijkstra_and_astar_agree(graph: nx.DiGraph) -> None:
     assert route.distance_km == pytest.approx(expected)
 
 
-def test_route_respects_direction(graph: nx.DiGraph) -> None:
+def test_route_respects_direction(graph: StopGraph) -> None:
     with pytest.raises(nx.NetworkXNoPath):
         shortest_route(graph, "Rodovia Amaral Peixoto, 3", "Rodovia Amaral Peixoto, 1")
 
 
-def test_route_ride_plan(graph: nx.DiGraph) -> None:
+def test_route_ride_plan(graph: StopGraph) -> None:
     route = shortest_route(graph, "Beta", "Alpha")
     # Beta->Gamma is L1 only, Gamma->Delta->Alpha is L2: one transfer at Gamma.
     assert route.rides == [("L1", 1), ("L2", 2)]
@@ -71,7 +72,7 @@ def test_plan_rides_minimises_transfers() -> None:
     assert plan_rides([]) == []
 
 
-def test_nearest_stop(graph: nx.DiGraph) -> None:
+def test_nearest_stop(graph: StopGraph) -> None:
     stop, dist = nearest_stop(graph, -22.9601, -42.9701)
     assert stop == "Beta"
     assert dist < 0.02

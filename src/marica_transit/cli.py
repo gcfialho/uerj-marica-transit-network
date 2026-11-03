@@ -17,7 +17,7 @@ from marica_transit import analysis, coverage, maps, web
 from marica_transit.config import DEFAULT_DESTINATION, DEFAULT_ORIGIN, Paths
 from marica_transit.data import quality_report
 from marica_transit.geo import REGIONS
-from marica_transit.graph import subgraph_in_bbox, write_graphml
+from marica_transit.graph import StopGraph, subgraph_in_bbox, write_graphml
 from marica_transit.pipeline import load_graph
 
 log = logging.getLogger("marica_transit")
@@ -31,7 +31,7 @@ def _coord(text: str) -> tuple[float, float]:
     return lat, lon
 
 
-def _load(args: argparse.Namespace) -> tuple[Paths, nx.DiGraph, pd.DataFrame]:
+def _load(args: argparse.Namespace) -> tuple[Paths, StopGraph, pd.DataFrame]:
     paths = Paths(data_dir=args.data_dir)
     stops, graph = load_graph(
         paths,
@@ -44,7 +44,7 @@ def _load(args: argparse.Namespace) -> tuple[Paths, nx.DiGraph, pd.DataFrame]:
     return paths, graph, stops
 
 
-def _region_graph(graph: nx.DiGraph, region: str) -> nx.DiGraph:
+def _region_graph(graph: StopGraph, region: str) -> StopGraph:
     return graph if region == "marica" else subgraph_in_bbox(graph, REGIONS[region])
 
 
@@ -63,11 +63,12 @@ def cmd_build_graph(args: argparse.Namespace) -> None:
 
 def cmd_analyze(args: argparse.Namespace) -> None:
     _, graph, stops = _load(args)
-    report = {"geocode_quality": quality_report(stops), "networks": []}
+    networks: list[dict[str, object]] = []
+    report = {"geocode_quality": quality_report(stops), "networks": networks}
     for region in args.region:
         summary = analysis.summarize(_region_graph(graph, region), top_k=args.top)
         print(analysis.format_summary(summary), end="\n\n")
-        report["networks"].append(summary.to_dict())
+        networks.append(summary.to_dict())
     print("Geocode quality (unique stop names):", report["geocode_quality"])
     if args.json:
         args.json.parent.mkdir(parents=True, exist_ok=True)
@@ -99,7 +100,7 @@ def cmd_map(args: argparse.Namespace) -> None:
 
 
 def _resolve_stops(
-    graph: nx.DiGraph, name: str | None, coord: tuple[float, float], label: str
+    graph: StopGraph, name: str | None, coord: tuple[float, float], label: str
 ) -> list[str]:
     if name:
         if name not in graph:

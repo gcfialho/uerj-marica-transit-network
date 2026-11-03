@@ -11,6 +11,7 @@ from typing import Any
 import networkx as nx
 
 from marica_transit.geo import haversine_km
+from marica_transit.graph import StopGraph
 
 log = logging.getLogger(__name__)
 
@@ -54,12 +55,12 @@ class NetworkSummary:
         return asdict(self)
 
 
-def _ranked(graph: nx.DiGraph, scores: dict[str, float], k: int) -> list[RankedStop]:
+def _ranked(graph: StopGraph, scores: dict[str, float], k: int) -> list[RankedStop]:
     best = sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))[:k]
     return [RankedStop(n, float(v), len(graph.nodes[n]["lines"])) for n, v in best]
 
 
-def summarize(graph: nx.DiGraph, top_k: int = 10) -> NetworkSummary:
+def summarize(graph: StopGraph, top_k: int = 10) -> NetworkSummary:
     """Compute :class:`NetworkSummary` for ``graph``."""
     if graph.number_of_nodes() == 0:
         raise ValueError("graph is empty")
@@ -172,18 +173,17 @@ class Route:
         return max(len(self.rides) - 1, 0)
 
 
-def nearest_stop(graph: nx.DiGraph, lat: float, lon: float) -> tuple[str, float]:
+def nearest_stop(graph: StopGraph, lat: float, lon: float) -> tuple[str, float]:
     """Return the stop closest to (lat, lon) and its distance in km."""
     if graph.number_of_nodes() == 0:
         raise ValueError("graph is empty")
-    best = min(
-        graph.nodes(data=True), key=lambda nd: haversine_km(lat, lon, nd[1]["lat"], nd[1]["lon"])
-    )
-    return best[0], haversine_km(lat, lon, best[1]["lat"], best[1]["lon"])
+    nodes = graph.nodes
+    best = min(nodes, key=lambda n: haversine_km(lat, lon, nodes[n]["lat"], nodes[n]["lon"]))
+    return best, haversine_km(lat, lon, nodes[best]["lat"], nodes[best]["lon"])
 
 
 def stops_near(
-    graph: nx.DiGraph, lat: float, lon: float, tolerance_km: float = 0.005
+    graph: StopGraph, lat: float, lon: float, tolerance_km: float = 0.005
 ) -> tuple[list[str], float]:
     """All stops tied for nearest to (lat, lon), within ``tolerance_km`` of the best.
 
@@ -221,22 +221,25 @@ def plan_rides(leg_lines: list[list[str]]) -> list[tuple[str, int]]:
     return rides
 
 
-def _route_from_path(graph: nx.DiGraph, path: list[str]) -> Route:
+def _route_from_path(graph: StopGraph, path: list[str]) -> Route:
     legs = list(itertools.pairwise(path))
     leg_lines = [list(graph.edges[u, v]["lines"]) for u, v in legs]
     km = sum(graph.edges[u, v]["distance_km"] for u, v in legs)
     return Route(stops=path, distance_km=km, leg_lines=leg_lines, rides=plan_rides(leg_lines))
 
 
-def shortest_route(graph: nx.DiGraph, source: str, target: str) -> Route:
+def shortest_route(graph: StopGraph, source: str, target: str) -> Route:
     """Distance-weighted shortest path (Dijkstra). Raises ``nx.NetworkXNoPath``."""
     path = nx.dijkstra_path(graph, source, target, weight="distance_km")
     return _route_from_path(graph, path)
 
 
-def best_route(graph: nx.DiGraph, sources: list[str], targets: list[str]) -> Route:
+def best_route(graph: StopGraph, sources: list[str], targets: list[str]) -> Route:
     """Shortest route from any of ``sources`` to any of ``targets`` (Dijkstra)."""
     lengths, paths = nx.multi_source_dijkstra(graph, set(sources), weight="distance_km")
+    # Without a target, networkx returns dicts keyed by every reachable node.
+    assert isinstance(lengths, dict)
+    assert isinstance(paths, dict)
     reachable = [t for t in targets if t in lengths]
     if not reachable:
         raise nx.NetworkXNoPath(f"no path from {sources} to {targets}")
@@ -244,7 +247,7 @@ def best_route(graph: nx.DiGraph, sources: list[str], targets: list[str]) -> Rou
     return _route_from_path(graph, paths[target])
 
 
-def shortest_route_astar(graph: nx.DiGraph, source: str, target: str) -> Route:
+def shortest_route_astar(graph: StopGraph, source: str, target: str) -> Route:
     """A* with the straight-line (haversine) distance as an admissible heuristic."""
 
     def heuristic(u: str, v: str) -> float:

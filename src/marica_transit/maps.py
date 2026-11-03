@@ -9,11 +9,11 @@ from pathlib import Path
 from typing import Any
 
 import folium
-import networkx as nx
 
 from marica_transit.analysis import Route
 from marica_transit.coverage import SPACING_CLASSES, CoverageResult, classify_spacing
 from marica_transit.data import Quality
+from marica_transit.graph import StopGraph
 
 log = logging.getLogger(__name__)
 
@@ -41,24 +41,30 @@ PANEL_CSS = (
 )
 
 
+def _figure(fmap: folium.Map) -> folium.Figure:
+    root = fmap.get_root()
+    assert isinstance(root, folium.Figure)  # a folium.Map is always created inside a Figure
+    return root
+
+
 def _panel(fmap: folium.Map, position_css: str, inner_html: str) -> None:
     div = f'<div style="{PANEL_CSS}{position_css}">{inner_html}</div>'
-    fmap.get_root().html.add_child(folium.Element(div))
+    _figure(fmap).html.add_child(folium.Element(div))
 
 
-def _center(graph: nx.DiGraph) -> tuple[float, float]:
+def _center(graph: StopGraph) -> tuple[float, float]:
     lats = [d["lat"] for _, d in graph.nodes(data=True)]
     lons = [d["lon"] for _, d in graph.nodes(data=True)]
     return (min(lats) + max(lats)) / 2, (min(lons) + max(lons)) / 2
 
 
-def _bounds(graph: nx.DiGraph) -> list[list[float]]:
+def _bounds(graph: StopGraph) -> list[list[float]]:
     lats = [d["lat"] for _, d in graph.nodes(data=True)]
     lons = [d["lon"] for _, d in graph.nodes(data=True)]
     return [[min(lats), min(lons)], [max(lats), max(lons)]]
 
 
-def _base_map(graph: nx.DiGraph) -> folium.Map:
+def _base_map(graph: StopGraph) -> folium.Map:
     fmap = folium.Map(location=_center(graph), zoom_start=12, tiles=TILES, control_scale=True)
     fmap.fit_bounds(_bounds(graph))
     return fmap
@@ -78,7 +84,7 @@ def _legend(fmap: folium.Map, title: str, items: Iterable[tuple[str, str]], note
     )
 
 
-def _edge_features(graph: nx.DiGraph) -> list[dict[str, Any]]:
+def _edge_features(graph: StopGraph) -> list[dict[str, Any]]:
     features = []
     for u, v, d in graph.edges(data=True):
         a, b = graph.nodes[u], graph.nodes[v]
@@ -102,7 +108,7 @@ def _edge_features(graph: nx.DiGraph) -> list[dict[str, Any]]:
     return features
 
 
-def _stop_features(graph: nx.DiGraph, quality: str) -> list[dict[str, Any]]:
+def _stop_features(graph: StopGraph, quality: str) -> list[dict[str, Any]]:
     return [
         {
             "type": "Feature",
@@ -119,7 +125,7 @@ def _stop_features(graph: nx.DiGraph, quality: str) -> list[dict[str, Any]]:
     ]
 
 
-def _add_edges(fmap: folium.Map, graph: nx.DiGraph, colour: str = EDGE) -> None:
+def _add_edges(fmap: folium.Map, graph: StopGraph, colour: str = EDGE) -> None:
     folium.GeoJson(
         {"type": "FeatureCollection", "features": _edge_features(graph)},
         name="Stop-to-stop links",
@@ -135,7 +141,7 @@ def _add_edges(fmap: folium.Map, graph: nx.DiGraph, colour: str = EDGE) -> None:
     ).add_to(fmap)
 
 
-def _add_stops(fmap: folium.Map, graph: nx.DiGraph) -> None:
+def _add_stops(fmap: folium.Map, graph: StopGraph) -> None:
     for quality, colour, label in (
         (Quality.OK, STOP_OK, "Stops"),
         (Quality.APPROXIMATE, STOP_APPROX, "Stops with approximate geocode"),
@@ -157,7 +163,7 @@ def _add_stops(fmap: folium.Map, graph: nx.DiGraph) -> None:
         ).add_to(fmap)
 
 
-def _add_hubs(fmap: folium.Map, graph: nx.DiGraph, hubs: list[tuple[str, float]]) -> None:
+def _add_hubs(fmap: folium.Map, graph: StopGraph, hubs: list[tuple[str, float]]) -> None:
     group = folium.FeatureGroup(name="Top stops by betweenness")
     for rank, (stop, score) in enumerate(hubs, 1):
         d = graph.nodes[stop]
@@ -180,7 +186,7 @@ def _add_hubs(fmap: folium.Map, graph: nx.DiGraph, hubs: list[tuple[str, float]]
 
 
 def network_map(
-    graph: nx.DiGraph,
+    graph: StopGraph,
     title: str,
     hubs: list[tuple[str, float]] | None = None,
     layer_control: bool = True,
@@ -210,7 +216,7 @@ def network_map(
 
 
 def route_map(
-    graph: nx.DiGraph, route: Route, title: str, hubs: list[tuple[str, float]] | None = None
+    graph: StopGraph, route: Route, title: str, hubs: list[tuple[str, float]] | None = None
 ) -> folium.Map:
     """Network map with a shortest route drawn on top."""
     fmap = network_map(graph, title, hubs, layer_control=False)
@@ -302,13 +308,13 @@ def coverage_map(result: CoverageResult, road_label: str) -> folium.Map:
 
 def save_map(fmap: folium.Map, path: Path, title: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fmap.get_root().title = title
+    _figure(fmap).title = title
     fmap.save(str(path))
     log.info("wrote %s (%.0f KB)", path, path.stat().st_size / 1024)
 
 
 def static_network_png(
-    graph: nx.DiGraph,
+    graph: StopGraph,
     path: Path,
     hubs: list[tuple[str, float]],
     title: str,

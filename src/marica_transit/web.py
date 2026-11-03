@@ -20,7 +20,7 @@ from marica_transit import analysis, coverage
 from marica_transit.config import DEFAULT_DESTINATION, DEFAULT_ORIGIN
 from marica_transit.data import quality_report
 from marica_transit.geo import ITAIPUACU, MARICA, BoundingBox
-from marica_transit.graph import EXCLUDED_QUALITIES, subgraph_in_bbox
+from marica_transit.graph import EXCLUDED_QUALITIES, StopGraph, subgraph_in_bbox
 
 log = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ def _line_sequences(stops: pd.DataFrame, ids: dict[str, int]) -> list[dict[str, 
     return out
 
 
-def _route_case(graph: nx.DiGraph, ids: dict[str, int]) -> dict[str, Any] | None:
+def _route_case(graph: StopGraph, ids: dict[str, int]) -> dict[str, Any] | None:
     net = subgraph_in_bbox(graph, ITAIPUACU)
     sources, _ = analysis.stops_near(net, *DEFAULT_ORIGIN)
     targets, _ = analysis.stops_near(net, *DEFAULT_DESTINATION)
@@ -159,7 +159,7 @@ def _corridors(stops: pd.DataFrame) -> list[dict[str, Any]]:
     return out
 
 
-def build_bundle(graph: nx.DiGraph, stops: pd.DataFrame) -> dict[str, Any]:
+def build_bundle(graph: StopGraph, stops: pd.DataFrame) -> dict[str, Any]:
     """Return the JSON-serialisable bundle consumed by ``docs/app.js``."""
     names = sorted(graph.nodes)
     ids = {name: i for i, name in enumerate(names)}
@@ -199,13 +199,13 @@ def build_bundle(graph: nx.DiGraph, stops: pd.DataFrame) -> dict[str, Any]:
         for u, v, d in graph.edges(data=True)
     ]
 
-    def summary(g: nx.DiGraph) -> dict[str, Any]:
+    def summary(g: StopGraph) -> dict[str, Any]:
         s = analysis.summarize(g, top_k=10).to_dict()
         for key in ("top_betweenness", "top_degree", "top_lines_served"):
             s[key] = [{**r, "id": ids[r["stop"]]} for r in s[key]]
         return s
 
-    bundle = {
+    bundle: dict[str, Any] = {
         "schema": SCHEMA_VERSION,
         "source": "Moovit snapshot (2025), geocoded with Nominatim and Google",
         "regions": {box.name: _box(box) for box in (MARICA, ITAIPUACU)},
@@ -225,7 +225,7 @@ def build_bundle(graph: nx.DiGraph, stops: pd.DataFrame) -> dict[str, Any]:
     return bundle
 
 
-def write_bundle(graph: nx.DiGraph, stops: pd.DataFrame, path: Path) -> dict[str, Any]:
+def write_bundle(graph: StopGraph, stops: pd.DataFrame, path: Path) -> dict[str, Any]:
     """Build the bundle and write it as compact UTF-8 JSON."""
     bundle = build_bundle(graph, stops)
     path.parent.mkdir(parents=True, exist_ok=True)

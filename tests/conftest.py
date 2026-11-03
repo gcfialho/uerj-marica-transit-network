@@ -1,11 +1,10 @@
 from pathlib import Path
 
-import networkx as nx
 import pandas as pd
 import pytest
 
 from marica_transit.data import flag_geocode_quality, read_stops
-from marica_transit.graph import build_graph
+from marica_transit.graph import StopGraph, build_graph
 
 FIXTURE = Path(__file__).parent / "fixtures" / "tiny_stops.csv"
 
@@ -16,5 +15,5 @@ def stops() -> pd.DataFrame:
 
 
 @pytest.fixture
-def graph(stops: pd.DataFrame) -> nx.DiGraph:
+def graph(stops: pd.DataFrame) -> StopGraph:
     return build_graph(stops)
