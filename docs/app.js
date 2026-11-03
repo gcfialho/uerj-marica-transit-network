@@ -22,10 +22,17 @@ const state = {
   focus: null, // stop id highlighted inside a line or route view
   route: { from: null, to: null, isCase: false, picking: null, result: null },
   corridorMax: 450,
+  corridorKey: "marighella",
+  reach: null, // origin stop id for the reach view
 };
 
 let data, map, popup;
-let stopsById = [], adjacency = [], lineByCode = new Map(), btRank = [];
+let stopsById = [], adjacency = [], lineByCode = new Map(), btRank = [], stopOnLines = [];
+let reachCache = { origin: null, levels: null };
+function levelsFor(origin) {
+  if (reachCache.origin !== origin) reachCache = { origin, levels: reachLevels(origin) };
+  return reachCache.levels;
+}
 const panel = document.querySelector("[data-view]");
 const legendEl = document.querySelector("[data-legend]");
 const pickBanner = document.querySelector("[data-pick-banner]");
@@ -78,12 +85,49 @@ function index() {
   };
   data.view = { marica: extent(data.stops), itaipuacu: extent(data.stops.filter((s) => s.bt_ita !== undefined)) };
 
-  // Present the corridor west to east.
-  const c = data.corridor;
-  if (c.points.length > 1 && c.points[0].lon > c.points[c.points.length - 1].lon) {
-    c.points.reverse();
-    c.spacings_m.reverse();
+  // Present every corridor west to east.
+  for (const c of data.corridors) {
+    if (c.points.length > 1 && c.points[0].lon > c.points[c.points.length - 1].lon) {
+      c.points.reverse();
+      c.spacings_m.reverse();
+    }
   }
+
+  // For reach: where each stop sits in each line's sequence.
+  stopOnLines = data.stops.map(() => []);
+  data.lines.forEach((line, li) => line.stops.forEach((id, pos) => stopOnLines[id].push([li, pos])));
+}
+
+const corr = () => data.corridors.find((c) => c.key === state.corridorKey) || data.corridors[0];
+
+// Fewest boardings needed to reach every stop from an origin, following each line's
+// direction. Level 0 = reachable on a line that serves the origin, 1 = one transfer, ...
+function reachLevels(origin, maxLevel = 3) {
+  const level = new Int8Array(data.stops.length).fill(-1);
+  // Earliest position each line has been boarded at; boarding further back reaches more.
+  const boardedAt = data.lines.map((l) => l.stops.length);
+  level[origin] = 0;
+  let frontier = [origin];
+  for (let k = 0; k <= maxLevel && frontier.length; k++) {
+    const next = [];
+    for (const stop of frontier) {
+      for (const [li, pos] of stopOnLines[stop]) {
+        if (pos >= boardedAt[li]) continue;
+        const until = boardedAt[li];
+        boardedAt[li] = pos;
+        const seq = data.lines[li].stops;
+        for (let j = pos + 1; j < until; j++) {
+          if (level[seq[j]] === -1) {
+            level[seq[j]] = k;
+            next.push(seq[j]);
+          }
+        }
+      }
+    }
+    frontier = next;
+  }
+  level[origin] = -2; // the origin itself
+  return level;
 }
 
 const hop = (a, b) => adjacency[a].find((x) => x.t === b);
@@ -185,7 +229,7 @@ function planRides(legLines) {
 }
 
 function corridorView() {
-  const c = data.corridor;
+  const c = corr();
   const gaps = c.spacings_m
     .map((d, i) => ({ d, i, a: c.points[i], b: c.points[i + 1] }))
     .filter((g) => g.d > state.corridorMax);
@@ -193,8 +237,9 @@ function corridorView() {
 }
 
 function classOf(d) {
-  for (let i = 0; i < data.corridor.classes.length; i++) {
-    const [upper, colour] = data.corridor.classes[i];
+  const classes = data.corridors[0].classes;
+  for (let i = 0; i < classes.length; i++) {
+    const [upper, colour] = classes[i];
     if (upper === null || d <= upper) return { i, color: CLASS_COLORS[colour] || "#888" };
   }
   return { i: 0, color: "#888" };
@@ -295,6 +340,7 @@ function bindMapEvents() {
   map.on("click", "stops", (e) => {
     const id = e.features[0]?.properties.id;
     if (id == null) return;
+    if (state.tab === "reach") return go(`#/reach/${id}`);
     if (state.route.picking) {
       const which = state.route.picking;
       state.route.picking = null;
@@ -321,8 +367,27 @@ function hoverSegment(i) {
   document.querySelectorAll(".spacing-chart .bar").forEach((b) => b.classList.toggle("is-dim", i !== null && Number(b.dataset.i) !== i));
 }
 
+const REACH_COLORS = () => (darkQuery.matches ? ["#7ff0d4", "#e0b54a", "#e07b6a"] : ["#0b7a68", "#c98a14", "#c0473a"]);
+let reachApplied = null;
+function applyReachState() {
+  const want = state.tab === "reach" ? state.reach : null;
+  if (!map.getSource("stops") || want === reachApplied) return;
+  const lv = want != null ? levelsFor(want) : null;
+  for (const s of data.stops) map.setFeatureState({ source: "stops", id: s.id }, { lvl: lv ? lv[s.id] : -1 });
+  reachApplied = want;
+}
+
 function stopPaint() {
   const dark = darkQuery.matches;
+  if (state.tab === "reach" && state.reach != null) {
+    const [c0, c1, c2] = REACH_COLORS();
+    const lvl = ["coalesce", ["feature-state", "lvl"], -1];
+    return {
+      color: ["match", lvl, 0, c0, 1, c1, 2, c2, 3, c2, dark ? "#3b4859" : "#a9b3bf"],
+      radius: ["interpolate", ["linear"], ["zoom"], 10, ["match", lvl, 0, 3.4, 1, 2.8, 2, 2.4, 1.6], 14, ["match", lvl, 0, 6.5, 1, 5.5, 2, 4.5, 3]],
+      sort: ["get", "n"],
+    };
+  }
   const key = state.region === "itaipuacu" ? "bt_ita" : "bt";
   const zoomed = (r) => ["interpolate", ["linear"], ["zoom"], 10, ["*", 0.75, r], 14, ["*", 1.5, r]];
   if (state.mode === "centrality") {
@@ -348,7 +413,7 @@ function syncMap({ fit = true } = {}) {
   map.setPaintProperty("stops", "circle-radius", paint.radius);
   map.setLayoutProperty("stops", "circle-sort-key", paint.sort);
 
-  const focusMode = (state.tab === "lines" && state.line) || (state.tab === "route" && state.route.result) || state.tab === "corridor";
+  const focusMode = (state.tab === "lines" && state.line) || (state.tab === "route" && state.route.result) || state.tab === "corridor" || (state.tab === "reach" && state.reach != null);
   const regionOut = state.region === "itaipuacu" ? ["!", ["get", "ita"]] : false;
   const base = focusMode ? 0.28 : 1;
   const op = (on) => (regionOut ? ["case", regionOut, Math.min(0.12, on), on] : on);
@@ -356,7 +421,12 @@ function syncMap({ fit = true } = {}) {
   map.setPaintProperty("stops", "circle-stroke-opacity", op(base));
   map.setPaintProperty("edges", "line-opacity", op(focusMode ? 0.35 : 0.8));
   map.setLayoutProperty("edges-suspect", "visibility", state.mode === "quality" && !focusMode ? "visible" : "none");
-  map.setLayoutProperty("region", "visibility", state.region === "itaipuacu" || state.tab === "corridor" ? "visible" : "none");
+  map.setLayoutProperty("region", "visibility", state.region === "itaipuacu" && state.tab !== "reach" ? "visible" : "none");
+  if (state.tab === "reach" && state.reach != null) {
+    // Reached stops stay fully visible; only unreachable ones step back.
+    map.setPaintProperty("stops", "circle-opacity", ["case", ["<", ["coalesce", ["feature-state", "lvl"], -1], 0], 0.25, 0.95]);
+    map.setPaintProperty("stops", "circle-stroke-opacity", ["case", ["<", ["coalesce", ["feature-state", "lvl"], -1], 0], 0.2, 1]);
+  }
 
   // Highlighted path: a line's sequence or the computed route.
   let path = null;
@@ -386,7 +456,8 @@ function syncMap({ fit = true } = {}) {
   map.getSource("od").setData({ type: "FeatureCollection", features: od });
 
   // Selected or focused stop.
-  const sel = state.tab === "stops" ? state.stop : state.focus;
+  const sel = state.tab === "stops" ? state.stop : state.tab === "reach" ? state.reach : state.focus;
+  applyReachState();
   map.getSource("sel").setData(sel != null ? { type: "Feature", geometry: { type: "Point", coordinates: [stopsById[sel].lon, stopsById[sel].lat] }, properties: {} } : empty());
 
   syncCorridor();
@@ -441,7 +512,12 @@ function fitToState() {
   if (state.tab === "lines" && state.line) return fitCoords(lineByCode.get(state.line).stops.map((id) => [stopsById[id].lon, stopsById[id].lat]));
   if (state.tab === "route" && state.route.result) return fitCoords(state.route.result.stops.map((id) => [stopsById[id].lon, stopsById[id].lat]));
   if (state.tab === "stops" && state.stop != null) return flyToStop(state.stop);
-  if (state.tab === "corridor") return fitCoords(data.corridor.points.map((p) => [p.lon, p.lat]), 15);
+  if (state.tab === "corridor") return fitCoords(corr().points.map((p) => [p.lon, p.lat]), 15);
+  if (state.tab === "reach" && state.reach != null) {
+    const lv = levelsFor(state.reach);
+    const pts = data.stops.filter((s) => lv[s.id] === 0 || lv[s.id] === -2).map((s) => [s.lon, s.lat]);
+    return fitCoords(pts.length > 1 ? pts : data.stops.map((s) => [s.lon, s.lat]), 14);
+  }
   const box = data.view[state.region];
   map.fitBounds(box, { padding: padding(), duration: reduceMotion ? 0 : 900 });
 }
@@ -488,8 +564,14 @@ function renderLegend() {
   const L = T().legend;
   const dark = darkQuery.matches;
   let rows = [];
-  if (state.tab === "corridor") {
-    rows = data.corridor.classes.map(([, colour], i) => `<div class="row"><span class="dot" style="background:${CLASS_COLORS[colour]}"></span>${esc(T().corridor.classes[i])}</div>`);
+  if (state.tab === "reach" && state.reach != null) {
+    const [c0, c1, c2] = REACH_COLORS();
+    const R = T().reach;
+    rows = [[c0, R.levels[0]], [c1, R.levels[1]], [c2, R.levels[2]], ["var(--edge)", R.levels[3]]].map(
+      ([c, label]) => `<div class="row"><span class="dot" style="background:${c}"></span>${esc(label)}</div>`,
+    );
+  } else if (state.tab === "corridor") {
+    rows = corr().classes.map(([, colour], i) => `<div class="row"><span class="dot" style="background:${CLASS_COLORS[colour]}"></span>${esc(T().corridor.classes[i])}</div>`);
     rows.push(`<div class="row"><span class="dot" style="border:2px solid var(--flag)"></span>${esc(L.gapStop)}</div>`);
   } else if ((state.tab === "lines" && state.line) || (state.tab === "route" && state.route.result)) {
     rows.push(`<div class="row"><span class="dash" style="border-top:4px solid var(--accent);width:1.6rem"></span>${esc(L.selected)}</div>`);
@@ -670,6 +752,7 @@ function viewStops() {
       <div class="actions">
         <button type="button" class="btn" data-action="route-from" data-id="${s.id}">${esc(t.stop.routeFrom)}</button>
         <button type="button" class="btn" data-action="route-to" data-id="${s.id}">${esc(t.stop.routeTo)}</button>
+        <button type="button" class="btn" data-action="reach-from" data-id="${s.id}">${esc(t.stop.reach)}</button>
       </div>`;
   }
   return `
@@ -784,14 +867,19 @@ function gapList() {
 
 function viewCorridor() {
   const t = T().corridor;
-  const c = data.corridor;
+  const c = corr();
   const km = c.spacings_m.reduce((a, b) => a + b, 0) / 1000;
   const sorted = [...c.spacings_m].sort((a, b) => a - b);
   const mid = sorted.length % 2 ? sorted[(sorted.length - 1) / 2] : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
   return `
     <section class="section">
-      <h2>${esc(t.title)}</h2>
+      <span class="field-label">${esc(t.road)}</span>
+      ${segmented("corridor", c.key, data.corridors.map((x) => [x.key, x.short]))}
+    </section>
+    <section class="section">
+      <h2>${esc(t.title(c.street))}</h2>
       <p class="note">${esc(t.intro(fmt(c.points.length), fmt(km, 2), fmt(mid)))}</p>
+      ${c.dropped_points ? `<p class="callout" style="margin-top:.75rem">${esc(t.trimmed(c.dropped_points))}</p>` : ""}
     </section>
     <section class="section">
       <div class="range-row"><label class="field-label" for="gap">${esc(t.threshold)}</label><span class="range-value" data-range-value>${fmt(state.corridorMax)} ${T().m}</span></div>
@@ -808,11 +896,56 @@ function viewCorridor() {
     </section>`;
 }
 
-const VIEWS = { overview: viewOverview, lines: viewLines, stops: viewStops, route: viewRoute, corridor: viewCorridor };
+function defaultReachOrigin() {
+  return data.summaries.marica.top_lines_served[0].id; // the busiest hub
+}
+
+function viewReach() {
+  const t = T().reach;
+  const id = state.reach;
+  const s = id != null ? stopsById[id] : null;
+  let body = `<p class="note">${esc(t.pick)}</p>`;
+  if (s) {
+    const lv = levelsFor(id);
+    const counts = [0, 0, 0, 0];
+    for (let i = 0; i < lv.length; i++) {
+      if (lv[i] === -2) continue;
+      counts[lv[i] === -1 ? 3 : Math.min(lv[i], 2)] += 1;
+    }
+    const total = data.stops.length - 1;
+    const colors = [...REACH_COLORS(), "var(--edge)"];
+    body = `
+      <section class="section">
+        <h2>${esc(s.name)}</h2>
+        <p class="note">${esc(t.summary(fmt(counts[0] + counts[1]), fmt(total)))}</p>
+      </section>
+      <dl class="stats">${counts
+        .map(
+          (n, i) => `<div><dt><span class="swatch" style="display:inline-block;vertical-align:-1px;margin-right:.45rem;background:${colors[i]}"></span>${esc(t.levels[i])}</dt><dd>${fmt(n)} <span class="note">(${fmt((n / total) * 100, 0)}%)</span></dd></div>`,
+        )
+        .join("")}</dl>
+      <section class="section">
+        <h2>${esc(t.boards)}</h2>
+        <div class="chips" style="margin-top:.5rem">${s.lines.map((c) => `<button type="button" class="chip" data-action="line" data-code="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+      </section>
+      <p class="note">${esc(t.caveat)}</p>`;
+  }
+  return `
+    <p class="note">${esc(t.intro)}</p>
+    <div class="combo">
+      <label class="field-label" for="reach-origin">${esc(t.origin)}</label>
+      <div class="search"><input id="reach-origin" type="text" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list"
+        data-input="od" data-role="reach" data-focus-key="reach-origin" value="${esc(s ? s.name : "")}" placeholder="${esc(T().route.placeholder)}"></div>
+      <div data-suggest="reach"></div>
+    </div>
+    ${body}`;
+}
+
+const VIEWS = { overview: viewOverview, lines: viewLines, stops: viewStops, route: viewRoute, reach: viewReach, corridor: viewCorridor };
 
 let lastViewKey = "";
 function render({ fit = true } = {}) {
-  const key = `${state.tab}|${state.line}|${state.stop}`;
+  const key = `${state.tab}|${state.line}|${state.stop}|${state.corridorKey}|${state.reach}`;
   const focusKey = document.activeElement?.dataset?.focusKey;
   const scroll = key === lastViewKey ? panel.scrollTop : 0;
   panel.innerHTML = VIEWS[state.tab]();
@@ -846,7 +979,10 @@ function updateTabs() {
   }
   const active = tabs.find((t) => t.dataset.tab === state.tab);
   const ind = document.querySelector(".tab-indicator");
-  if (active && ind) ind.style.transform = `translateX(${active.offsetLeft + 8}px) scaleX(${Math.max(1, active.offsetWidth - 16)})`;
+  if (active && ind) ind.style.transform = `translateX(${active.offsetLeft + 6}px) scaleX(${Math.max(1, active.offsetWidth - 12)})`;
+  // Keep the active tab in view when the row scrolls (phones).
+  const row = active?.parentElement;
+  if (row && row.scrollWidth > row.clientWidth) row.scrollTo({ left: active.offsetLeft - 16, behavior: reduceMotion ? "auto" : "smooth" });
 }
 
 function applyStaticText() {
@@ -883,12 +1019,16 @@ function applyHash() {
   state.line = null;
   state.stop = null;
   state.focus = null;
-  if (state.tab !== "route") state.route.picking = null;
 
   if (state.tab === "overview") state.region = a === "itaipuacu" ? "itaipuacu" : "marica";
   if (state.tab === "lines" && a && lineByCode.has(decodeURIComponent(a))) state.line = decodeURIComponent(a);
   if (state.tab === "stops" && a != null && stopsById[Number(a)]) state.stop = Number(a);
-  if (state.tab === "corridor") state.region = "itaipuacu";
+  if (state.tab === "corridor") {
+    if (a && data.corridors.some((c) => c.key === a)) state.corridorKey = a;
+    state.region = corr().region;
+  }
+  if (state.tab === "reach") state.reach = a != null && stopsById[Number(a)] ? Number(a) : (state.reach ?? defaultReachOrigin());
+  if (state.tab !== "route" && state.tab !== "reach") state.route.picking = null;
   if (state.tab === "route") {
     const r = state.route;
     if (a === "case" && data.route_case) {
@@ -926,6 +1066,8 @@ document.querySelector(".tabs").addEventListener("click", (e) => {
   const t = tab.dataset.tab;
   if (t === "overview") go(`#/overview${state.region === "itaipuacu" ? "/itaipuacu" : ""}`);
   else if (t === "route") goRoute();
+  else if (t === "corridor") go(`#/corridor/${state.corridorKey}`);
+  else if (t === "reach") go(`#/reach/${state.reach ?? defaultReachOrigin()}`);
   else go(`#/${t}`);
 });
 document.querySelector(".tabs").addEventListener("keydown", (e) => {
@@ -950,6 +1092,10 @@ panel.addEventListener("click", (e) => {
     case "mode":
       state.mode = el.dataset.value;
       return render({ fit: false });
+    case "corridor":
+      return go(`#/corridor/${el.dataset.value}`);
+    case "reach-from":
+      return go(`#/reach/${id}`);
     case "stop":
       return go(`#/stops/${id}`);
     case "line":
@@ -980,12 +1126,13 @@ panel.addEventListener("click", (e) => {
       state.route.picking = state.route.picking === el.dataset.role ? null : el.dataset.role;
       return render({ fit: false });
     case "suggest":
+      if (el.dataset.role === "reach") return go(`#/reach/${id}`);
       state.route[el.dataset.role] = id;
       state.route.isCase = false;
       return goRoute();
     case "gap": {
       const i = Number(el.dataset.i);
-      const c = data.corridor;
+      const c = corr();
       fitCoords([[c.points[i].lon, c.points[i].lat], [c.points[i + 1].lon, c.points[i + 1].lat]], 16);
       return hoverSegment(i);
     }
@@ -1060,7 +1207,7 @@ panel.addEventListener("mouseout", (e) => {
 panel.addEventListener("click", (e) => {
   const bar = e.target.closest(".spacing-chart .bar");
   if (!bar) return;
-  const i = Number(bar.dataset.i), c = data.corridor;
+  const i = Number(bar.dataset.i), c = corr();
   fitCoords([[c.points[i].lon, c.points[i].lat], [c.points[i + 1].lon, c.points[i + 1].lat]], 16);
 });
 
@@ -1085,6 +1232,7 @@ async function boot() {
   const res = await fetch("data/network.json");
   data = await res.json();
   index();
+  if (!data.corridors.length) document.querySelector('[data-tab="corridor"]').hidden = true;
   map = new maplibregl.Map({
     container: "map",
     style: darkQuery.matches ? STYLES.dark : STYLES.light,

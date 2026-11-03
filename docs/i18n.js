@@ -7,7 +7,7 @@ export const STRINGS = {
     subtitle: "Ônibus públicos (EPT) de Maricá, RJ, modelados como um grafo",
     skip: "Pular para o painel",
     mapLabel: "Mapa interativo da rede de ônibus de Maricá",
-    tabs: { overview: "Visão geral", lines: "Linhas", stops: "Paradas", route: "Rota", corridor: "Corredor" },
+    tabs: { overview: "Visão geral", lines: "Linhas", stops: "Paradas", route: "Rota", reach: "Alcance", corridor: "Corredor" },
     lede: (s) =>
       `Cada parada é um nó e cada trecho entre duas paradas consecutivas de uma linha é uma ligação dirigida. São ${s.stops} paradas, ${s.edges} ligações e ${s.lines} linhas.`,
     region: "Região",
@@ -83,6 +83,7 @@ export const STRINGS = {
       servedBy: "Linhas que param aqui",
       routeFrom: "Rota a partir daqui",
       routeTo: "Rota até aqui",
+      reach: "Ver alcance daqui",
       address: "Endereço geocodificado",
     },
     route: {
@@ -109,9 +110,12 @@ export const STRINGS = {
       path: "Paradas do caminho",
     },
     corridor: {
-      title: "Espaçamento na Av. Carlos Marighella",
+      road: "Via",
+      title: (street) => `Espaçamento em ${street}`,
       intro: (n, km, median) =>
-        `A principal via de Itaipuaçu tem ${n} pontos de parada ao longo de ${km} km, com espaçamento mediano de ${median} m.`,
+        `${n} pontos de parada ao longo de ${km} km, com espaçamento mediano de ${median} m.`,
+      trimmed: (n) =>
+        `Mostra o maior trecho contínuo. ${n} ${n === 1 ? "ponto ficou" : "pontos ficaram"} de fora porque, depois dele, há saltos de mais de 3 km: paradas que a geocodificação juntou num ponto só, não falta real de paradas.`,
       threshold: "Distância máxima aceitável entre paradas",
       gaps: (n) => (n === 0 ? "Nenhum trecho acima do limite." : n === 1 ? "1 trecho acima do limite" : `${n} trechos acima do limite`),
       gapsNote: "Cada trecho acima do limite recebe uma parada sugerida no ponto médio.",
@@ -119,6 +123,16 @@ export const STRINGS = {
       between: (a, b) => `Entre ${a} e ${b}`,
       classes: ["até 400 m", "400 a 600 m", "600 a 800 m", "800 a 1.200 m", "acima de 1.200 m"],
       approximate: "inclui posição aproximada",
+    },
+    reach: {
+      intro: "Aonde dá para chegar a partir de uma parada, contando quantas vezes é preciso trocar de ônibus.",
+      origin: "Parada de partida",
+      pick: "Escolha uma parada pela busca ou clicando no mapa.",
+      summary: (n, total) => `Com no máximo uma baldeação, chega-se a ${n} das ${total} outras paradas.`,
+      levels: ["Sem baldeação", "1 baldeação", "2 ou 3 baldeações", "Mais de 3 ou inalcançável"],
+      boards: "Linhas que passam aqui",
+      caveat:
+        "Segue o sentido de cada linha no retrato do Moovit, que tem um sentido por linha. Na prática, a volta costuma existir, então o alcance real tende a ser maior.",
     },
     km: "km",
     m: "m",
@@ -130,7 +144,7 @@ export const STRINGS = {
     subtitle: "Maricá's public buses (EPT), Rio de Janeiro, modelled as a graph",
     skip: "Skip to the panel",
     mapLabel: "Interactive map of the Maricá bus network",
-    tabs: { overview: "Overview", lines: "Lines", stops: "Stops", route: "Route", corridor: "Corridor" },
+    tabs: { overview: "Overview", lines: "Lines", stops: "Stops", route: "Route", reach: "Reach", corridor: "Corridor" },
     lede: (s) =>
       `Each stop is a node, and each hop between two consecutive stops of a line is a directed link. There are ${s.stops} stops, ${s.edges} links and ${s.lines} lines.`,
     region: "Region",
@@ -206,6 +220,7 @@ export const STRINGS = {
       servedBy: "Lines that stop here",
       routeFrom: "Route from here",
       routeTo: "Route to here",
+      reach: "See reach from here",
       address: "Geocoded address",
     },
     route: {
@@ -232,9 +247,11 @@ export const STRINGS = {
       path: "Stops on the path",
     },
     corridor: {
-      title: "Stop spacing on Av. Carlos Marighella",
-      intro: (n, km, median) =>
-        `Itaipuaçu's main road has ${n} stop locations over ${km} km, with a median spacing of ${median} m.`,
+      road: "Road",
+      title: (street) => `Stop spacing on ${street}`,
+      intro: (n, km, median) => `${n} stop locations over ${km} km, with a median spacing of ${median} m.`,
+      trimmed: (n) =>
+        `Shows the longest continuous stretch. ${n} ${n === 1 ? "point was" : "points were"} left out because beyond it there are jumps of over 3 km: stops the geocoder merged into one point, not a real lack of stops.`,
       threshold: "Largest acceptable gap between stops",
       gaps: (n) => (n === 0 ? "No gaps above the limit." : n === 1 ? "1 gap above the limit" : `${n} gaps above the limit`),
       gapsNote: "Each gap above the limit gets a suggested stop at its midpoint.",
@@ -242,6 +259,16 @@ export const STRINGS = {
       between: (a, b) => `Between ${a} and ${b}`,
       classes: ["up to 400 m", "400 to 600 m", "600 to 800 m", "800 to 1,200 m", "over 1,200 m"],
       approximate: "includes an approximate position",
+    },
+    reach: {
+      intro: "Where you can get to from a stop, counting how many times you need to change buses.",
+      origin: "Starting stop",
+      pick: "Choose a stop with the search or by clicking the map.",
+      summary: (n, total) => `With at most one transfer you can reach ${n} of the ${total} other stops.`,
+      levels: ["No transfer", "1 transfer", "2 or 3 transfers", "More than 3 or unreachable"],
+      boards: "Lines that stop here",
+      caveat:
+        "Follows each line's direction in the Moovit snapshot, which has one direction per line. In practice the return trip usually exists, so real reach tends to be larger.",
     },
     km: "km",
     m: "m",
