@@ -49,7 +49,8 @@ def _road(n: int, step_deg: float = 0.004) -> pd.DataFrame:
 def test_order_along_road_recovers_sequence() -> None:
     df = _road(5)
     points = [
-        RoadPoint(r.lat, r.lon, (r.stop_name,), ("X",), approximate=False) for r in df.itertuples()
+        RoadPoint(lat, lon, (name,), ("X",), approximate=False)
+        for lat, lon, name in zip(df["lat"], df["lon"], df["stop_name"], strict=True)
     ]
     ordered = [p.stop_names[0] for p in order_along_road(points)]
     expected = [f"Avenida Teste, {i}" for i in range(5)]

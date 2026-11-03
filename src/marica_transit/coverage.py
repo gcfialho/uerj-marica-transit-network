@@ -11,6 +11,7 @@ import itertools
 import math
 import unicodedata
 from dataclasses import dataclass
+from typing import cast
 
 import pandas as pd
 
@@ -104,7 +105,8 @@ class CoverageResult:
 
 def _group_points(rows: pd.DataFrame) -> list[RoadPoint]:
     points = []
-    for (lat, lon), grp in rows.groupby(["lat", "lon"], sort=True):
+    for key, grp in rows.groupby(["lat", "lon"], sort=True):
+        lat, lon = cast(tuple[float, float], key)  # grouping by two columns gives 2-tuple keys
         points.append(
             RoadPoint(
                 lat=float(lat),

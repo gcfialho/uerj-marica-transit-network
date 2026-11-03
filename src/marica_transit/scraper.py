@@ -67,7 +67,8 @@ class MoovitScraper:
             try:
                 resp = self._requests.get(url, headers=self.headers, timeout=self.timeout_s)
                 resp.raise_for_status()
-                return resp.text
+                text: str = resp.text
+                return text
             except self._requests.RequestException as exc:
                 log.warning("attempt %d/%d failed for %s: %s", attempt, self.retries, url, exc)
             if attempt < self.retries:
