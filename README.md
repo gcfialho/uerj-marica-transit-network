@@ -6,13 +6,27 @@ interactive maps.
 
 [![CI](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml/badge.svg)](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml) ![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB) [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-[![Interactive map of the Maricá bus network](docs/img/network.png)](https://gcfialho.github.io/uerj-marica-transit-network/)
+[![The explorer: Maricá's bus network coloured by betweenness centrality](docs/img/explorer-overview.png)](https://gcfialho.github.io/uerj-marica-transit-network/)
 
-**Live map:** <https://gcfialho.github.io/uerj-marica-transit-network/>. Also available:
-[Itaipuaçu](https://gcfialho.github.io/uerj-marica-transit-network/itaipuacu.html),
-[shortest route](https://gcfialho.github.io/uerj-marica-transit-network/route-optimization.html) and
-[stop spacing on Av. Carlos Marighella](https://gcfialho.github.io/uerj-marica-transit-network/main-road-coverage.html).
-The source files are in [`docs/`](docs/).
+**Live explorer, in Portuguese and English:** <https://gcfialho.github.io/uerj-marica-transit-network/>.
+
+- **Overview:** network figures for Maricá or Itaipuaçu, and stops coloured by lines served,
+  betweenness centrality or geocode quality.
+- **Lines:** each of the 46 lines drawn in its direction of travel, with its stops in order and
+  the transfers at each one. Hops over 5 km are flagged as geocoding errors.
+- **Stops:** search any stop to see its lines, centrality rank and geocode quality.
+- **Route:** shortest path between any two stops (Dijkstra, following line direction) with the
+  fewest-transfer ride plan, or the course case study across Jardim Atlântico.
+- **Corridor:** stop spacing on Av. Carlos Marighella, with a slider for the acceptable gap and a
+  suggested stop for every gap above it.
+
+| Line E08 in its direction of travel | Shortest route, case study | Stop spacing on Av. Carlos Marighella |
+|---|---|---|
+| [![Line view](docs/img/explorer-line.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/lines/E08) | [![Route view](docs/img/explorer-route.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/route/case) | [![Corridor view](docs/img/explorer-corridor.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/corridor) |
+
+The explorer is plain HTML and JavaScript with MapLibre in [`docs/`](docs/). It reads
+[`docs/data/network.json`](docs/data/network.json), which `marica-transit web` writes with the
+same code that produces the numbers below.
 
 ## Highlights
 
@@ -43,7 +57,8 @@ uv sync
 uv run marica-transit analyze      # network statistics (Maricá + Itaipuaçu)
 uv run marica-transit route        # shortest route across Jardim Atlântico
 uv run marica-transit coverage     # stop spacing along Av. Carlos Marighella
-uv run marica-transit all          # regenerate every map, the PNG and docs/network_stats.json
+uv run marica-transit web          # data bundle for the explorer (docs/data/network.json)
+uv run marica-transit all          # regenerate the bundle, stats JSON, PNG and Folium maps
 ```
 
 To re-scrape or re-geocode, which needs the network, run
@@ -63,6 +78,8 @@ flowchart LR
     E --> G[route<br/>Dijkstra / A*]
     D --> H[coverage<br/>stop spacing on a road]
     E --> I[map<br/>Folium HTML + PNG]
+    E --> J[web<br/>explorer data bundle]
+    J --> K[docs/ explorer<br/>MapLibre, PT and EN]
 ```
 
 | Module | Responsibility |
@@ -75,16 +92,18 @@ flowchart LR
 | `analysis.py` | Network statistics, centrality, Dijkstra / A\*, ride plans |
 | `coverage.py` | Ordering stops along a road and detecting gaps |
 | `maps.py` | Folium maps and the static Matplotlib preview |
+| `web.py` | JSON bundle for the explorer: stops, links, line sequences, summaries, route and corridor studies |
 | `scraper.py`, `geocoder.py` | Network access (optional `fetch` extra) |
 
 | Command | What it does |
 |---|---|
 | `build-graph [--graphml PATH]` | Build the graph and export GraphML (default `output/marica_network.graphml`) |
 | `analyze [--region marica itaipuacu] [--top N] [--json PATH]` | Components, density, reciprocity, shortest paths, top stops by betweenness, degree and lines served |
-| `map [--out-dir docs] [--png PATH]` | Interactive maps of the full network and Itaipuaçu, plus a static PNG |
+| `web [--out PATH]` | Data bundle for the explorer (default `docs/data/network.json`) |
+| `map [--out-dir output/maps] [--png PATH]` | Standalone Folium maps of the full network and Itaipuaçu, plus a static PNG |
 | `route [--from STOP --to STOP \| --from-coord=LAT,LON --to-coord=LAT,LON] [--region]` | Shortest route (Dijkstra, cross-checked with A\*) and the fewest-transfer ride plan |
 | `coverage [--street NAME ...] [--max-gap-m 450] [--region]` | Stop spacing along a road, with a suggested stop for every gap |
-| `all [--out-dir docs]` | Everything above with the case-study defaults |
+| `all [--out-dir docs]` | Everything above with the case-study defaults (Folium maps go to `output/maps/`) |
 
 Every command accepts `--data-dir`, `-v` and the opt-in network flags `--force-rescrape`,
 `--force-regeocode`, `--geocoder {both,nominatim,google}` and `--contact EMAIL`.
@@ -181,7 +200,7 @@ in [`docs/network_stats.json`](docs/network_stats.json).
 │   ├── raw/              # scraped stop sequences (Moovit snapshot)
 │   └── processed/        # + latitude, longitude, geocoded address
 ├── analyses/             # case-study notes: route optimisation, main-road coverage
-├── docs/                 # GitHub Pages: maps, img/, network_stats.json
+├── docs/                 # GitHub Pages: explorer (index.html, app.js, i18n.js), data/, img/
 ├── tests/                # pytest suite + fixture network
 └── article/              # course article (Portuguese, PDF)
 ```
