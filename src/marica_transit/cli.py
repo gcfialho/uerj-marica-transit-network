@@ -13,19 +13,14 @@ from pathlib import Path
 import networkx as nx
 import pandas as pd
 
-from marica_transit import analysis, coverage, maps
-from marica_transit.config import Paths
+from marica_transit import analysis, coverage, maps, web
+from marica_transit.config import DEFAULT_DESTINATION, DEFAULT_ORIGIN, Paths
 from marica_transit.data import quality_report
 from marica_transit.geo import REGIONS
 from marica_transit.graph import subgraph_in_bbox, write_graphml
 from marica_transit.pipeline import load_graph
 
 log = logging.getLogger("marica_transit")
-
-# Origin/destination of the course project's route case study: the eastern and western
-# ends of Jardim Atlântico, Itaipuaçu. The nearest graph stop to each point is used.
-DEFAULT_ORIGIN = (-22.9672379, -42.9099213)
-DEFAULT_DESTINATION = (-22.9675662, -42.9707889)
 
 
 def _coord(text: str) -> tuple[float, float]:
@@ -163,16 +158,30 @@ def cmd_coverage(args: argparse.Namespace) -> None:
         print(f"wrote {args.out}")
 
 
+def cmd_web(args: argparse.Namespace) -> None:
+    _, graph, stops = _load(args)
+    bundle = web.write_bundle(graph, stops, args.out)
+    print(
+        f"explorer data: {len(bundle['stops'])} stops, {len(bundle['edges'])} links,"
+        f" {len(bundle['lines'])} line sequences -> {args.out}"
+    )
+
+
 def cmd_all(args: argparse.Namespace) -> None:
-    """Regenerate every committed artefact (docs/ maps, preview PNG, stats JSON)."""
+    """Regenerate every artefact: explorer data, stats JSON and PNG in docs/, Folium maps."""
     docs: Path = args.out_dir
+    folium_dir = Paths().folium_dir
     for fn, extra in (
+        (cmd_web, {"out": docs / "data" / "network.json"}),
         (cmd_build_graph, {"graphml": Paths().graphml}),
         (
             cmd_analyze,
             {"region": ["marica", "itaipuacu"], "top": 10, "json": docs / "network_stats.json"},
         ),
-        (cmd_map, {"no_png": False, "png": docs / "img" / "network-static.png"}),
+        (
+            cmd_map,
+            {"out_dir": folium_dir, "no_png": False, "png": docs / "img" / "network-static.png"},
+        ),
         (
             cmd_route,
             {
@@ -181,7 +190,7 @@ def cmd_all(args: argparse.Namespace) -> None:
                 "destination": None,
                 "from_coord": DEFAULT_ORIGIN,
                 "to_coord": DEFAULT_DESTINATION,
-                "out": docs / "route-optimization.html",
+                "out": folium_dir / "route-optimization.html",
             },
         ),
         (
@@ -190,7 +199,7 @@ def cmd_all(args: argparse.Namespace) -> None:
                 "region": "itaipuacu",
                 "street": None,
                 "max_gap_m": 450.0,
-                "out": docs / "main-road-coverage.html",
+                "out": folium_dir / "main-road-coverage.html",
             },
         ),
     ):
@@ -246,8 +255,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", type=Path, help="also write the statistics as JSON")
     p.set_defaults(func=cmd_analyze)
 
-    p = sub.add_parser("map", parents=[common], help="write interactive maps and a PNG preview")
-    p.add_argument("--out-dir", type=Path, default=Path("docs"))
+    p = sub.add_parser("map", parents=[common], help="write standalone Folium maps and a PNG")
+    p.add_argument("--out-dir", type=Path, default=Paths().folium_dir)
     p.add_argument("--png", type=Path, default=Path("docs/img/network-static.png"))
     p.add_argument("--no-png", action="store_true")
     p.set_defaults(func=cmd_map)
@@ -272,7 +281,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out", type=Path, help="write an interactive coverage map (HTML)")
     p.set_defaults(func=cmd_coverage)
 
-    p = sub.add_parser("all", parents=[common], help="regenerate every artefact in docs/")
+    p = sub.add_parser("web", parents=[common], help="write the data bundle for the explorer")
+    p.add_argument("--out", type=Path, default=Paths().explorer_data)
+    p.set_defaults(func=cmd_web)
+
+    p = sub.add_parser("all", parents=[common], help="regenerate every artefact")
     p.add_argument("--out-dir", type=Path, default=Path("docs"))
     p.set_defaults(func=cmd_all)
     return parser

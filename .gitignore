@@ -19,3 +19,4 @@ output/
 .idea/
 .vscode/
 .playwright-mcp/
+output/maps/

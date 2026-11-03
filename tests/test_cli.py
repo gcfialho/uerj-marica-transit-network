@@ -71,3 +71,17 @@ def test_map_and_coverage_outputs(data_dir: Path, tmp_path: Path) -> None:
     cov = tmp_path / "cov.html"
     main(["coverage", "--data-dir", str(data_dir), "--street", "Alpha St", "--out", str(cov)])
     assert "Stop spacing" in cov.read_text()
+
+
+def test_web_bundle(data_dir: Path, tmp_path: Path) -> None:
+    out = tmp_path / "network.json"
+    main(["web", "--data-dir", str(data_dir), "--out", str(out)])
+    bundle = json.loads(out.read_text())
+    assert len(bundle["stops"]) == 7
+    assert {"marica", "itaipuacu"} <= bundle["summaries"].keys()
+    ids = {s["id"] for s in bundle["stops"]}
+    edges = {(e["s"], e["t"]) for e in bundle["edges"]}
+    for line in bundle["lines"]:
+        assert set(line["stops"]) <= ids
+        # every drawn hop of a line is a real link of the graph
+        assert all((a, b) in edges for a, b in zip(line["stops"], line["stops"][1:], strict=False))
