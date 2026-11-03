@@ -73,7 +73,7 @@ p, li { text-wrap: pretty; }
 .skip-link:focus { top: 1rem; }
 
 /* ---------- Layout: panel beside the map; on phones the map sits on top ---------- */
-.app { display: grid; height: 100dvh; grid-template-columns: minmax(22rem, 27rem) 1fr; }
+.app { display: grid; height: 100dvh; grid-template-columns: minmax(23rem, 28.5rem) 1fr; }
 .panel { display: flex; flex-direction: column; min-height: 0; background: var(--paper); border-right: 1px solid var(--line); z-index: 2; }
 .map-wrap { position: relative; min-width: 0; }
 .map { position: absolute; inset: 0; }
@@ -97,9 +97,9 @@ h1 { font-size: 1.55rem; line-height: 1.1; letter-spacing: -0.025em; font-weight
 .lang button { padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: var(--muted); transition: background-color 150ms ease, color 150ms ease; }
 .lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
-.tabs { position: relative; display: flex; gap: 0.15rem; margin-top: 1rem; overflow-x: auto; scrollbar-width: none; }
+.tabs { position: relative; display: flex; gap: 0.1rem; margin-inline: -0.45rem; margin-top: 1rem; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
-.tabs [role="tab"] { padding: 0.55rem 0.6rem 0.7rem; font-size: 0.92rem; color: var(--muted); white-space: nowrap; transition: color 150ms ease; }
+.tabs [role="tab"] { padding: 0.55rem 0.45rem 0.7rem; font-size: 0.9rem; color: var(--muted); white-space: nowrap; transition: color 150ms ease; }
 .tabs [role="tab"]:hover, .tabs [role="tab"][aria-selected="true"] { color: var(--ink); }
 .tabs [role="tab"][aria-selected="true"] { font-weight: 600; }
 .tab-indicator { position: absolute; left: 0; bottom: -1px; height: 2px; width: 1px; background: var(--accent); transform-origin: left; transition: transform 300ms var(--ease-out); }

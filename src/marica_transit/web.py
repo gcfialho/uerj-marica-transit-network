@@ -82,14 +82,55 @@ def _route_case(graph: nx.DiGraph, ids: dict[str, int]) -> dict[str, Any] | None
     }
 
 
-def _corridor(stops: pd.DataFrame) -> dict[str, Any]:
-    inside = stops[
-        [ITAIPUACU.contains(a, b) for a, b in zip(stops["lat"], stops["lon"], strict=True)]
-    ]
-    result = coverage.analyse_road(inside, coverage.CARLOS_MARIGHELLA)
+# Corridors shown in the explorer. Only roads with enough precisely geocoded stops to give
+# a meaningful spacing profile are included (see the README for why others were left out).
+CORRIDORS: tuple[dict[str, Any], ...] = (
+    {
+        "key": "marighella",
+        "label": "Avenida Carlos Marighella",
+        "short": "Av. Carlos Marighella",
+        "streets": coverage.CARLOS_MARIGHELLA,
+        "region": ITAIPUACU,
+    },
+    {
+        "key": "rj106",
+        "label": "Rodovia Amaral Peixoto (RJ-106)",
+        "short": "RJ-106",
+        "streets": ("Amaral Peixoto", "RJ 106", "RJ-106"),
+        "region": None,
+    },
+)
+
+# Hops longer than this between consecutive matched stops are holes in the geocoded data
+# (stops collapsed onto one approximate point), not real spacing. The corridor keeps its
+# longest stretch without such a hole.
+DATA_GAP_M = 3000.0
+
+
+def _corridor(stops: pd.DataFrame, spec: dict[str, Any]) -> dict[str, Any]:
+    box: BoundingBox | None = spec["region"]
+    if box is not None:
+        stops = stops[[box.contains(a, b) for a, b in zip(stops["lat"], stops["lon"], strict=True)]]
+    result = coverage.analyse_road(stops, spec["streets"])
+    points, spacings = result.points, result.spacings_m
+
+    # Longest run of consecutive points with no data gap.
+    best, run_start = (0, 0), 0
+    for i in range(len(spacings) + 1):
+        if i == len(spacings) or spacings[i] > DATA_GAP_M:
+            if i - run_start > best[1] - best[0]:
+                best = (run_start, i)
+            run_start = i + 1
+    lo, hi = best
+    kept_points = points[lo : hi + 1]
+    kept_spacings = spacings[lo:hi]
     return {
-        "street": "Avenida Carlos Marighella",
+        "key": spec["key"],
+        "street": spec["label"],
+        "short": spec["short"],
+        "region": box.name if box is not None else "marica",
         "default_max_gap_m": result.max_gap_m,
+        "dropped_points": len(points) - len(kept_points),
         "points": [
             {
                 "lat": round(p.lat, 6),
@@ -98,14 +139,24 @@ def _corridor(stops: pd.DataFrame) -> dict[str, Any]:
                 "lines": list(p.lines),
                 "approximate": p.approximate,
             }
-            for p in result.points
+            for p in kept_points
         ],
-        "spacings_m": [round(d, 1) for d in result.spacings_m],
+        "spacings_m": [round(d, 1) for d in kept_spacings],
         "classes": [
             [None if upper == float("inf") else upper, colour]
             for upper, _, colour in coverage.SPACING_CLASSES
         ],
     }
+
+
+def _corridors(stops: pd.DataFrame) -> list[dict[str, Any]]:
+    out = []
+    for spec in CORRIDORS:
+        try:
+            out.append(_corridor(stops, spec))
+        except ValueError:  # the road is not in this dataset (e.g. a test fixture)
+            log.info("corridor %s: no matching stops, skipped", spec["key"])
+    return out
 
 
 def build_bundle(graph: nx.DiGraph, stops: pd.DataFrame) -> dict[str, Any]:
@@ -164,7 +215,7 @@ def build_bundle(graph: nx.DiGraph, stops: pd.DataFrame) -> dict[str, Any]:
         "edges": edge_rows,
         "lines": _line_sequences(stops, ids),
         "route_case": _route_case(graph, ids),
-        "corridor": _corridor(stops),
+        "corridors": _corridors(stops),
     }
     # Sanity: every consecutive pair in a line sequence must be an edge of the graph.
     for line in bundle["lines"]:

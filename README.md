@@ -17,12 +17,19 @@ interactive maps.
 - **Stops:** search any stop to see its lines, centrality rank and geocode quality.
 - **Route:** shortest path between any two stops (Dijkstra, following line direction) with the
   fewest-transfer ride plan, or the course case study across Jardim Atlântico.
-- **Corridor:** stop spacing on Av. Carlos Marighella, with a slider for the acceptable gap and a
-  suggested stop for every gap above it.
+- **Reach:** pick a stop and see where you can get to with no transfer, one, or two to three,
+  following each line's direction. From Rodoviária do Povo, 510 of the 613 other stops are at
+  most one transfer away.
+- **Corridor:** stop spacing on Av. Carlos Marighella and on the Inoã to São José stretch of the
+  RJ-106, with a slider for the acceptable gap and a suggested stop for every gap above it. Only
+  roads with enough precisely geocoded stops are included; the RJ-106 view keeps its longest
+  stretch without a geocoding hole (jumps over 3 km where stops collapsed onto one point).
 
-| Line E08 in its direction of travel | Shortest route, case study | Stop spacing on Av. Carlos Marighella |
-|---|---|---|
-| [![Line view](docs/img/explorer-line.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/lines/E08) | [![Route view](docs/img/explorer-route.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/route/case) | [![Corridor view](docs/img/explorer-corridor.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/corridor) |
+| Line E08 in its direction of travel | Shortest route, case study |
+|---|---|
+| [![Line view](docs/img/explorer-line.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/lines/E08) | [![Route view](docs/img/explorer-route.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/route/case) |
+| **Reach from Rodoviária do Povo** | **Stop spacing on Av. Carlos Marighella** |
+| [![Reach view](docs/img/explorer-reach.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/reach) | [![Corridor view](docs/img/explorer-corridor.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/corridor/marighella) |
 
 The explorer is plain HTML and JavaScript with MapLibre in [`docs/`](docs/). It reads
 [`docs/data/network.json`](docs/data/network.json), which `marica-transit web` writes with the
