@@ -6,7 +6,7 @@ interactive maps.
 
 [![CI](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml/badge.svg)](https://github.com/gcfialho/uerj-marica-transit-network/actions/workflows/ci.yml) ![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB) [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-[![Interactive map of the Maricá bus network](docs/img/network.png)](https://gcfialho.github.io/uerj-marica-transit-network/)
+[![The explorer: Maricá's bus network coloured by betweenness centrality](docs/img/explorer-overview.png)](https://gcfialho.github.io/uerj-marica-transit-network/)
 
 **Live explorer, in Portuguese and English:** <https://gcfialho.github.io/uerj-marica-transit-network/>.
 
@@ -19,6 +19,10 @@ interactive maps.
   fewest-transfer ride plan, or the course case study across Jardim Atlântico.
 - **Corridor:** stop spacing on Av. Carlos Marighella, with a slider for the acceptable gap and a
   suggested stop for every gap above it.
+
+| Line E08 in its direction of travel | Shortest route, case study | Stop spacing on Av. Carlos Marighella |
+|---|---|---|
+| [![Line view](docs/img/explorer-line.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/lines/E08) | [![Route view](docs/img/explorer-route.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/route/case) | [![Corridor view](docs/img/explorer-corridor.png)](https://gcfialho.github.io/uerj-marica-transit-network/#/corridor) |
 
 The explorer is plain HTML and JavaScript with MapLibre in [`docs/`](docs/). It reads
 [`docs/data/network.json`](docs/data/network.json), which `marica-transit web` writes with the
