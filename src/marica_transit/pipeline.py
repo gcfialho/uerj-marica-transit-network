@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 
-import networkx as nx
 import pandas as pd
 
 from marica_transit.config import EPT_LINES_URL, Paths
@@ -16,7 +15,7 @@ from marica_transit.data import (
     write_stops,
 )
 from marica_transit.geocoder import Geocoder, Service
-from marica_transit.graph import build_graph
+from marica_transit.graph import StopGraph, build_graph
 from marica_transit.scraper import MoovitScraper
 
 log = logging.getLogger(__name__)
@@ -58,7 +57,7 @@ def load_graph(
     force_regeocode: bool = False,
     geocoder_service: Service = "both",
     contact: str | None = None,
-) -> tuple[pd.DataFrame, nx.DiGraph]:
+) -> tuple[pd.DataFrame, StopGraph]:
     """Load stops (see :func:`load_stops`) and build the network graph.
 
     The graph is rebuilt from CSV on every run (well under a second), replacing the

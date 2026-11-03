@@ -34,8 +34,11 @@ EXCLUDED_QUALITIES = frozenset({Quality.OUT_OF_AREA, Quality.MISSING})
 # topology is right, but flagged so distance-based results can be read with care.
 SUSPECT_LINK_KM = 5.0
 
+type StopGraph = nx.DiGraph[str]
+"""The network graph: nodes are stop names (see the module docstring)."""
 
-def build_graph(stops: pd.DataFrame) -> nx.DiGraph:
+
+def build_graph(stops: pd.DataFrame) -> StopGraph:
     """Build the network graph from a quality-flagged stops DataFrame.
 
     Required columns: ``line_code, direction, stop_order, stop_name, lat, lon,
@@ -50,16 +53,24 @@ def build_graph(stops: pd.DataFrame) -> nx.DiGraph:
             ", ".join(sorted(dropped.unique())),
         )
 
-    graph = nx.DiGraph(name="Maricá EPT bus network")
+    graph: StopGraph = nx.DiGraph(name="Maricá EPT bus network")
     lines_at_stop = usable.groupby("stop_name")["line_code"].agg(lambda s: sorted(set(s)))
-    for row in usable.drop_duplicates("stop_name").itertuples(index=False):
+    first = usable.drop_duplicates("stop_name")
+    for name, lat, lon, address, quality in zip(
+        first["stop_name"],
+        first["lat"],
+        first["lon"],
+        first["geocoded_address"],
+        first["geocode_quality"],
+        strict=True,
+    ):
         graph.add_node(
-            row.stop_name,
-            lat=float(row.lat),
-            lon=float(row.lon),
-            address=str(row.geocoded_address) if pd.notna(row.geocoded_address) else "",
-            quality=row.geocode_quality,
-            lines=lines_at_stop[row.stop_name],
+            name,
+            lat=float(lat),
+            lon=float(lon),
+            address=str(address) if pd.notna(address) else "",
+            quality=quality,
+            lines=lines_at_stop[name],
         )
 
     ordered = usable.sort_values(["line_code", "direction", "stop_order"])
@@ -92,7 +103,7 @@ def build_graph(stops: pd.DataFrame) -> nx.DiGraph:
     return graph
 
 
-def subgraph_in_bbox(graph: nx.DiGraph, bbox: BoundingBox) -> nx.DiGraph:
+def subgraph_in_bbox(graph: StopGraph, bbox: BoundingBox) -> StopGraph:
     """Induced subgraph of the stops inside ``bbox``.
 
     Only edges whose *both* endpoints are inside are kept; consecutive in-box stops of a
@@ -104,13 +115,13 @@ def subgraph_in_bbox(graph: nx.DiGraph, bbox: BoundingBox) -> nx.DiGraph:
     return sub
 
 
-def write_graphml(graph: nx.DiGraph, path: Path) -> None:
+def write_graphml(graph: StopGraph, path: Path) -> None:
     """Export to GraphML (list attributes are flattened to comma-separated strings).
 
     GraphML is a portable, non-executable alternative to the pickle cache that the
     original project committed (unpickling an untrusted file can run arbitrary code).
     """
-    flat = nx.DiGraph(name=graph.graph.get("name", ""))
+    flat: StopGraph = nx.DiGraph(name=graph.graph.get("name", ""))
     for n, d in graph.nodes(data=True):
         flat.add_node(n, **{k: ",".join(v) if isinstance(v, list) else v for k, v in d.items()})
     for u, v, d in graph.edges(data=True):
