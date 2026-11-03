@@ -217,6 +217,7 @@ in [`docs/network_stats.json`](docs/network_stats.json).
 ```bash
 uv run pytest
 uv run ruff check . && uv run ruff format --check .
+uv run mypy        # src/ and tests/ are type-checked with mypy --strict
 ```
 
 The 50 tests run on an eight-stop fixture whose answers can be checked by hand. They cover:
@@ -228,7 +229,7 @@ The 50 tests run on an eight-stop fixture whose answers can be checked by hand. 
 - road ordering and gap detection;
 - CLI smoke runs.
 
-CI runs lint, the tests and an offline pipeline run on Python 3.12 and 3.13.
+CI runs lint, type checks, the tests and an offline pipeline run on Python 3.12 and 3.13.
 
 ## Data sources & limitations
 
